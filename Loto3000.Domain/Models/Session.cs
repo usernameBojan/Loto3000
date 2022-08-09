@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Loto3000.Domain.Models
 {
-    public class DrawNumbers
+    public class Session
     {
-        public DrawNumbers() { }
         public int Id { get; set; }
-        public int Number { get; set; }
+        public DateTime Start { get; set; } 
+        public DateTime End { get; set; }
     }
 }

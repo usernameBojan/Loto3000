@@ -5,7 +5,7 @@ namespace Loto3000.Domain.Models
     public class User
     {
         public User() { }
-        public User(int id, string firstName, string lastName, string username, string pw, string email, double credits, DateOnly dateOfBirth, Role role, IList<Ticket> tickets)
+        public User(int id, string firstName, string lastName, string username, string pw, string email, double credits, DateOnly dateOfBirth, IList<Ticket> tickets)
         {
             Id = id;
             FirstName = firstName;
@@ -14,9 +14,28 @@ namespace Loto3000.Domain.Models
             Password = pw;
             Email = email;
             Credits = credits;
-            Role = role;
             DateOfBirth = dateOfBirth;
             Tickets = tickets;
+        }
+        public void CombinationGenerator(int[] nums)
+        {
+            IList<Combination> combs = new List<Combination>();
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                Combination combination = new Combination();
+
+                combination.Id = i;
+                if (nums[i] < 1 || nums[i] > 37)
+                {
+                    throw new Exception("Number is not valid, please choose a number between 1 and 37");
+                }
+                combination.Number = nums[i];
+
+                combs.Add(combination);
+            }
+
+            Combination = combs;
         }
         public int Id { get; set; } 
         public string FirstName { get; set; }
@@ -26,7 +45,7 @@ namespace Loto3000.Domain.Models
         public string Password { get; set; }    
         public string Email { get; set; }
         public double Credits { get; set; }
-        public Role Role { get; set; }
+        public IList<Combination> Combination { get; set; }
         public DateOnly DateOfBirth { get; set; }
         public IList<Ticket> Tickets { get; set; }
     }

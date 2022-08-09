@@ -15,10 +15,12 @@ namespace Loto3000.Domain.Models
 
             TicketId = id;
             User = user;
-            CombinationNumbers = comb.Combinations(nums);
+            //CombinationNumbers = comb.Combinations(nums);
         }
         public int TicketId { get; set; }
-        public IList<Combination> CombinationNumbers { get; set; } = new List<Combination>();
+        //public IList<Combination> CombinationNumbers { get; set; } = new List<Combination>();
         public User User { get; set; }
+        public Draw? Draw { get; set; }
+        public Session Session { get; set; }    
     }
 }
