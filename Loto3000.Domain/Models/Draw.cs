@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Loto3000.Domain.Enums;
 
 namespace Loto3000.Domain.Models
 {
-    public class Draw
+    public class Draw : IEntity
     {
         public Draw() { }
         public Draw(int drawOrderNum, IList<Ticket> tickets, DateTime drawTime, Session session)
@@ -41,6 +37,7 @@ namespace Loto3000.Domain.Models
         public int DrawSequenceNumber { get; set; }
         public IList<DrawNumbers> DrawNumbers { get; private set; } = new List<DrawNumbers>();
         public IList<Ticket> Tickets { get; set; } = new List<Ticket>();    
+        public Prizes Prizes { get; set; }
         public DateTime DrawTime { get; set; }
         public Session Session { get; set; }
     }

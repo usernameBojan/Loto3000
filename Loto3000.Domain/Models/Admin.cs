@@ -1,27 +1,14 @@
-﻿using Loto3000.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Loto3000.Domain.Models
+﻿namespace Loto3000.Domain.Models
 {
-    public class Admin
+    public class Admin : User
     {
         public Admin() { }
-        public Admin(int id, string name, string pw)
+        public Admin(string firstName, string lastName, string username, string password, string authorizationCode) : base (firstName, lastName, username, password)
         {
-            Id = id;
-            Name = name;
-            Username = $"Admin{name}";
-            Password = pw;
-            AuthorizationCode = pw;
+            AdminCredentials = $"Admin{firstName}";
+            AuthorizationCode = authorizationCode;
         }
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }    
-        public string AuthorizationCode { get; set; }
+        public string AdminCredentials { get; set; } = string.Empty;
+        public string AuthorizationCode { get; set; } = string.Empty;
     }
 }
