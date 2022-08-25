@@ -23,24 +23,22 @@ namespace Loto3000.Application.Mapper
                 x.CreateMap<CreateAdminDto, AdminDto>();
 
                 x.CreateMap<EditAdminDto, Admin>();
-                //.ForMember(m => m.FirstName, m => m.Ignore())
-                //.ForMember(y => y.LastName, y => y.Ignore())
-                //.ForMember(z => z.FullName, z => z.Ignore());
 
                 x.CreateMap<EditAdminDto, AdminDto>();
-                
-                //.ForMember(m => m.FirstName, m => m.Ignore())
-                //.ForMember(y => y.LastName, y => y.Ignore())
-                //.ForMember(z => z.FullName, z => z.Ignore());
 
                 x.CreateMap<Player, PlayerDto>();
-                //.ForMember(m => m.Id, m => m.Ignore());
-                //.ForMember(m => m.Password, m => m.Ignore())
-                //.ForMember(y => y.AuthorizationCode, y => y.Ignore());
 
-                x.CreateMap<CreateAdminDto, Admin>();
+                x.CreateMap<RegisterPlayerDto, Player>();
 
-                x.CreateMap<CreateAdminDto, AdminDto>();
+                x.CreateMap<RegisterPlayerDto, PlayerDto>();
+
+                x.CreateMap<BuyCreditsDto, TransactionTracker>();            
+
+                x.CreateMap<TransactionTracker, TransactionTrackerDto>();
+
+                x.CreateMap<CreateTicketDto, Ticket>();
+
+                x.CreateMap<CreateTicketDto, TicketDto>();
             });
 
             return cfg;

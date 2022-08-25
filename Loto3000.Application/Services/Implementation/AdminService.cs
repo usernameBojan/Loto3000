@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Loto3000.Application.Dto.Admin;
-//using Loto3000.Application.Dto.Player;
+using Loto3000.Application.Dto.Player;
 using Loto3000.Application.Repositories;
 using Loto3000.Domain.Models;
 
@@ -9,11 +9,13 @@ namespace Loto3000.Application.Services.Implementation
     public class AdminService : IAdminService
     {
         private readonly IRepository<Admin> adminRepository;
+        private readonly IRepository<TransactionTracker> transactionsRepository;
         private readonly IMapper mapper;
 
-        public AdminService(IRepository<Admin> adminRepository, IMapper mapper)
+        public AdminService(IRepository<Admin> adminRepository, IRepository<TransactionTracker> transactionsRepository, IMapper mapper)
         {
             this.adminRepository = adminRepository;
+            this.transactionsRepository = transactionsRepository;
             this.mapper = mapper;
         }
         public AdminDto GetAdmin(int id)
@@ -21,17 +23,24 @@ namespace Loto3000.Application.Services.Implementation
             var admin = adminRepository.GetById(id);
             if (admin == null)
             {
-                throw new Exception("Admin not found"); //напрај сопствени ексепшни
+                throw new Exception("Admin not found");
             }
 
             return mapper.Map<AdminDto>(admin);
         }
         public IEnumerable<AdminDto> GetAdmins()
         {
-            var admins = adminRepository.GetAll().ToList();
-            return adminRepository.GetAll()
-                                  .Select(a => mapper.Map<AdminDto>(a))
-                                  .ToList();
+            var admins = adminRepository.GetAll()
+                                        .Select(a => mapper.Map<AdminDto>(a));
+
+            return admins.ToList();
+        }
+        public IEnumerable<TransactionTrackerDto> GetAllTransactions()
+        {
+            var transactions = transactionsRepository.GetAll()
+                                                     .Select(t => mapper.Map<TransactionTrackerDto>(t));
+            
+            return transactions.ToList();
         }
         public AdminDto CreateAdmin(CreateAdminDto dto)
         {
@@ -45,7 +54,7 @@ namespace Loto3000.Application.Services.Implementation
             var admin = adminRepository.GetById(id);
             if (admin == null)
             {
-                throw new Exception("Admin was not found");  //напрај сопствени ексепшни!!!!!
+                throw new Exception("Admin was not found");  
             }
 
             admin = mapper.Map<Admin>(dto);
@@ -58,7 +67,7 @@ namespace Loto3000.Application.Services.Implementation
             var admin = adminRepository.GetById(id);
             if (admin == null)
             {
-                throw new Exception("Admin not found"); //напрај сопствени ексепшни!!!!!
+                throw new Exception("Admin not found");
             }
 
             adminRepository.Delete(admin);

@@ -3,6 +3,7 @@ using Loto3000.Application.Services;
 using Loto3000.Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections;
 
 namespace Loto3000.Controllers
 {
@@ -16,7 +17,7 @@ namespace Loto3000.Controllers
         {
             this.service = service;
         }
-        [HttpGet("players/{id:int}")]
+        [HttpGet("{id:int}")]
         public ActionResult<PlayerDto> GetPlayer(int id)
         {
             try
@@ -35,8 +36,8 @@ namespace Loto3000.Controllers
             return Ok(service.GetPlayers());
         }
 
-        [HttpPost]
-        public ActionResult <PlayerDto> RegisterPlayer([FromBody] RegisterPlayerDto dto) 
+        [HttpPost("register")]
+        public ActionResult<PlayerDto> RegisterPlayer([FromBody] RegisterPlayerDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -52,10 +53,60 @@ namespace Loto3000.Controllers
             {
                 return BadRequest();
             }
-            //ДА СЕ НАПРАА СОПСТВЕНИ ЕКСЕПШНИ ШО ЌЕ КАЖУА КОЕ ЗА ШТО Е 
         }
 
-        [HttpDelete("players/{id:int}")]
+        [HttpPatch("{id:int}/deposit")]
+        public ActionResult BuyCredits([FromBody] BuyCreditsDto dto, int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                service.BuyCredits(dto, id);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("{id:int}/transactions")]
+        public ActionResult<IEnumerable> GetPlayerTransactions(int id)
+        {
+            try
+            {
+                return Ok(service.GetPlayerTransactions(id));
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+            
+        }
+        [HttpPost("{id:int}/create-ticket")]
+        public ActionResult<TicketDto> CreateTicket([FromBody] CreateTicketDto dto, int id)
+        {
+            if (!ModelState.IsValid) 
+            {
+                return BadRequest(ModelState); 
+            }
+
+            try 
+            { 
+                var ticket = service.CreateTicket(dto, id);
+                return Created($"api/v1/player/{id}/ticket/{ticket.Id}", ticket);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete("{id:int}")]
         public ActionResult DeletePlayer(int id)
         {
             try
@@ -63,7 +114,7 @@ namespace Loto3000.Controllers
                 service.DeletePlayer(id);
                 return Ok();
             }
-            catch
+            catch(Exception)
             {
                 return NotFound();
             }

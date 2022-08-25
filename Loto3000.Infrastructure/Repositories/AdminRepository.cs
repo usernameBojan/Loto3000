@@ -9,9 +9,9 @@ namespace Loto3000.Infrastructure.Repositories
         {
             return LotoStaticDb.Admins.FirstOrDefault(x => x.Id == id); 
         }
-        public List<Admin> GetAll()
+        public IEnumerable<Admin> GetAll()
         {
-            return LotoStaticDb.Admins.ToList();    
+            return LotoStaticDb.Admins;    
         }
         public Admin Create(Admin entity)
         {

@@ -9,9 +9,9 @@ namespace Loto3000.Infrastructure.Repositories
         {
             return LotoStaticDb.Players.FirstOrDefault(x => x.Id == id);
         }
-        public List<Player> GetAll()
+        public IEnumerable<Player> GetAll()
         {
-            return LotoStaticDb.Players.ToList();
+            return LotoStaticDb.Players;
         }
         public Player Create(Player entity)
         {

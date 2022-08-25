@@ -1,4 +1,5 @@
 ﻿using Loto3000.Application.Dto.Admin;
+using Loto3000.Application.Dto.Player;
 using Loto3000.Application.Services;
 using Loto3000.Domain.Models;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +22,11 @@ namespace Loto3000.Controllers
         {
             return Ok(service.GetAdmins());
         }
+        [HttpGet("show-transactions")]
+        public ActionResult<IList<TransactionTrackerDto>> GetAllTransactions()
+        {
+            return Ok(service.GetAllTransactions());
+        }
 
         [HttpGet("{id:int}")]
         public ActionResult<AdminDto> GetAdmin(int id)
@@ -35,7 +41,7 @@ namespace Loto3000.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("create-admin")]
         public ActionResult<AdminDto> CreateAdmin([FromBody] CreateAdminDto dto)
         {
             if (!ModelState.IsValid)

@@ -3,12 +3,10 @@
     public class Ticket : IEntity
     {
         public Ticket() { }
-        public Ticket(Player player, Draw draw, Session session/*, int[] nums*/)
+        public Ticket(Player player, Draw draw)
         {
             Player = player;
             Draw = draw;
-            Session = session;
-            //CombinationNumbers = player.Combination;
         }
         public void CombinationGenerator(int[] nums)
         {
@@ -37,8 +35,7 @@
         }
         public int Id { get; set; }
         public IList<Combination> CombinationNumbers { get; set; } = new List<Combination>();
-        public Player Player { get; set; }
+        public Player? Player { get; set; }
         public Draw? Draw { get; set; }
-        public Session Session { get; set; }    
     }
 }

@@ -16,12 +16,10 @@ builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IRepository<Admin>, AdminRepository>();
 builder.Services.AddScoped<IRepository<Player>, PlayerRepository>();
+builder.Services.AddScoped<IRepository<TransactionTracker>, TransactionsRepository>();
+builder.Services.AddScoped<IRepository<Draw>, DrawRepository>();
 builder.Services.AddSingleton(sp => ModelMapper.GetConfiguration());
-builder.Services.AddScoped(sp =>
-{
-    MapperConfiguration config = sp.GetRequiredService<MapperConfiguration>();
-    return config.CreateMapper();
-});
+builder.Services.AddScoped(sp => sp.GetRequiredService<MapperConfiguration>().CreateMapper());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

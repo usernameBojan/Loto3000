@@ -11,6 +11,7 @@ namespace Loto3000.Application.Dto.Player
         public string Email { get; set; } = string.Empty;
         public double Credits { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public IList<Ticket>? Tickets { get; set; }
+        public IList<Ticket> Tickets { get; set; } = new List<Ticket>();
+        public IList<TransactionTracker> TransactionTracker { get; set; } = new List<TransactionTracker>();
     }
 }

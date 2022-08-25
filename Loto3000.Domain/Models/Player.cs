@@ -2,44 +2,38 @@
 {
     public class Player : User
     {
+        private const int TicketPrice = 25;
         public Player() { }
-        public Player(string firstName, string lastName, string username, string password, string email, double credits, DateTime dateOfBirth, IList<Ticket> tickets) 
+        public Player
+            (string firstName, string lastName, string username, string password, string email, double credits, DateTime dateOfBirth) 
             : base(firstName, lastName, username, password)
         {
             Email = email;
             Credits = credits;
             DateOfBirth = dateOfBirth;
-            Tickets = tickets;
         }
-        //public void CombinationGenerator(int[] nums)
-        //{
-        //    IList<Combination> combs = new List<Combination>();
-            
-        //    if (nums.Length < 7)
-        //    {
-        //        throw new Exception("Ticket combination must contain 7 numbers.");
-        //    }
+        public Ticket CreateTicket(int[] numbers, Draw draw)
+        {
+            if(draw == null)
+            {
+                throw new Exception("There is no active draw.");
+            }
+            if(this.Credits < TicketPrice)
+            {
+                throw new Exception("Not enough credits to buy ticket");
+            }
+            var ticket = new Ticket(this, draw);
+            this.Credits -= TicketPrice;
+            ticket.CombinationGenerator(numbers);
 
-        //    for (int i = 0; i < nums.Length; i++)
-        //    {
-        //        Combination combination = new Combination();
+            Tickets.Add(ticket);
 
-        //        combination.Id = i;
-        //        if (nums[i] < 1 || nums[i] > 37)
-        //        {
-        //            throw new Exception("Number is not valid, please choose a number between 1 and 37");
-        //        }
-        //        combination.Number = nums[i];
-
-        //        combs.Add(combination);
-        //    }
-
-        //    Combination = combs;
-        //}
+            return ticket;
+        }
         public string Email { get; set; } = string.Empty;
         public double Credits { get; set; }
-        //public IList<Combination> Combination { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public IList<TransactionTracker> TransactionTracker { get; set; } = new List<TransactionTracker>();
         public IList<Ticket> Tickets { get; set; } = new List<Ticket>();    
     }
 }

@@ -18,9 +18,9 @@ namespace Loto3000.Domain.Models
 
             Random random = new Random();
             var winningNums = Enumerable.Range(1, 37)
-                                .OrderBy(x => random.Next())
-                                .Take(8)
-                                .ToList();
+                                        .OrderBy(x => random.Next())
+                                        .Take(8)
+                                        .ToList();
 
             for (int i = 0; i < 8; i++)
             {
@@ -39,6 +39,6 @@ namespace Loto3000.Domain.Models
         public IList<Ticket> Tickets { get; set; } = new List<Ticket>();    
         public Prizes Prizes { get; set; }
         public DateTime DrawTime { get; set; }
-        public Session Session { get; set; }
+        public Session? Session { get; set; }
     }
 }
