@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Loto3000.Domain.Entities;
 
-namespace Loto3000.Domain.Models
+namespace Loto3000.Domain.Entities
 {
     public class SuperAdmin : Admin
     {

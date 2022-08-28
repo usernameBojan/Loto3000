@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using Loto3000.Application.Dto.Admin;
 using Loto3000.Application.Dto.Player;
+using Loto3000.Application.Dto.Transactions;
+using Loto3000.Application.Dto.PlayerAccountManagment;
+using Loto3000.Application.Dto.Tickets;
 using Loto3000.Application.Repositories;
-using Loto3000.Domain.Models;
+using Loto3000.Domain.Entities;
+using Isopoh.Cryptography.Argon2;
 
 namespace Loto3000.Application.Services.Implementation
 {
@@ -45,6 +49,9 @@ namespace Loto3000.Application.Services.Implementation
         public AdminDto CreateAdmin(CreateAdminDto dto)
         {
             var admin = mapper.Map<Admin>(dto);
+            admin.Password = Argon2.Hash(dto.Password);
+            admin.AuthorizationCode = Argon2.Hash(dto.AuthorizationCode);
+
             adminRepository.Create(admin);
 
             return mapper.Map<AdminDto>(dto);

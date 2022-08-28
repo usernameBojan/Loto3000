@@ -1,4 +1,6 @@
-﻿using Loto3000.Domain.Models;
+﻿using Loto3000.Application.Dto.Tickets;
+using Loto3000.Application.Dto.Transactions;
+using System.Text.Json.Serialization;
 
 namespace Loto3000.Application.Dto.Player
 {
@@ -11,7 +13,8 @@ namespace Loto3000.Application.Dto.Player
         public string Email { get; set; } = string.Empty;
         public double Credits { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public IList<Ticket> Tickets { get; set; } = new List<Ticket>();
-        public IList<TransactionTracker> TransactionTracker { get; set; } = new List<TransactionTracker>();
+        //[JsonIgnore]
+        public IEnumerable<TicketDto> Tickets { get; set; } = new List<TicketDto>();
+        public IEnumerable<TransactionTrackerDto> TransactionTracker { get; set; } = new List<TransactionTrackerDto>();
     }
 }

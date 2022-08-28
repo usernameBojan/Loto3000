@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="Hashids.net" Version="1.6.1" />
+    <PackageReference Include="Isopoh.Cryptography.Argon2" Version="1.1.12" />
   </ItemGroup>
 
   <ItemGroup>

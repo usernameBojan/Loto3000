@@ -1,6 +1,6 @@
 ﻿using Loto3000.Domain.Enums;
 
-namespace Loto3000.Domain.Models
+namespace Loto3000.Domain.Entities
 {
     public class Draw : IEntity
     {

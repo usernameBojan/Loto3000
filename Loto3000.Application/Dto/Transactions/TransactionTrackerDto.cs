@@ -1,6 +1,4 @@
-﻿using Loto3000.Domain.Models;
-
-namespace Loto3000.Application.Dto.Player
+﻿namespace Loto3000.Application.Dto.Transactions
 {
     public class TransactionTrackerDto
     {

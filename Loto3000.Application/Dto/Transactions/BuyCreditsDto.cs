@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Loto3000.Application.Dto.Player
+namespace Loto3000.Application.Dto.Transactions
 {
     public class BuyCreditsDto
     {
-        public int Id { get; set; }
         [Required]
         public string CardHolderName { get; set; } = string.Empty;
         [Required]
@@ -19,7 +18,6 @@ namespace Loto3000.Application.Dto.Player
         [Required]
         public DateTime CardExpirationDate { get; set; }
         public DateTime TransactionDate { get; set; }
-        
         [Required]
         [RegularExpression("^-?\\d+(?:\\.\\d+)?$", ErrorMessage = "Wrong deposit format.")]
         public double DepositAmount { get; set; }

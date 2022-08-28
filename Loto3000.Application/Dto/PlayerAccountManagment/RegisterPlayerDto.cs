@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Loto3000.Application.Dto.Player
+namespace Loto3000.Application.Dto.PlayerAccountManagment
 {
     public class RegisterPlayerDto
     {
-        public int Id { get; set; }
         [Required]
         public string FirstName { get; set; } = string.Empty;
         [Required]

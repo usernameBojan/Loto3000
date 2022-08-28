@@ -1,7 +1,9 @@
 ﻿using Loto3000.Application.Dto.Admin;
-using Loto3000.Application.Dto.Player;
+using Loto3000.Application.Dto.Transactions;
+using Loto3000.Application.Dto.PlayerAccountManagment;
+using Loto3000.Application.Dto.Tickets;
 using Loto3000.Application.Services;
-using Loto3000.Domain.Models;
+using Loto3000.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

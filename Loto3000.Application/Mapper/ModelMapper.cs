@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Loto3000.Application.Dto.Admin;
 using Loto3000.Application.Dto.Player;
-using Loto3000.Domain.Models;
+using Loto3000.Application.Dto.Transactions;
+using Loto3000.Application.Dto.PlayerAccountManagment;
+using Loto3000.Application.Dto.Tickets;
+using Loto3000.Domain.Entities;
 
 namespace Loto3000.Application.Mapper
 {
@@ -18,7 +21,9 @@ namespace Loto3000.Application.Mapper
                 .ForMember(m => m.Password, m => m.Ignore())
                 .ForMember(y => y.AuthorizationCode, y => y.Ignore());
 
-                x.CreateMap<CreateAdminDto, Admin>();
+                x.CreateMap<CreateAdminDto, Admin>()
+                .ForMember(m => m.Password, m => m.Ignore())
+                .ForMember(y => y.AuthorizationCode, y => y.Ignore());
 
                 x.CreateMap<CreateAdminDto, AdminDto>();
 
@@ -28,7 +33,8 @@ namespace Loto3000.Application.Mapper
 
                 x.CreateMap<Player, PlayerDto>();
 
-                x.CreateMap<RegisterPlayerDto, Player>();
+                x.CreateMap<RegisterPlayerDto, Player>()
+                .ForMember(m => m.Password, m => m.Ignore());
 
                 x.CreateMap<RegisterPlayerDto, PlayerDto>();
 

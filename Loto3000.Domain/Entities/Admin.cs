@@ -1,4 +1,4 @@
-﻿namespace Loto3000.Domain.Models
+﻿namespace Loto3000.Domain.Entities
 {
     public class Admin : User
     {

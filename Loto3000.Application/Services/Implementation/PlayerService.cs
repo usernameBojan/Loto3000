@@ -1,7 +1,12 @@
 ﻿using AutoMapper;
+using HashidsNet;
 using Loto3000.Application.Dto.Player;
+using Loto3000.Application.Dto.PlayerAccountManagment;
+using Loto3000.Application.Dto.Transactions;
+using Loto3000.Application.Dto.Tickets;
 using Loto3000.Application.Repositories;
-using Loto3000.Domain.Models;
+using Loto3000.Domain.Entities;
+using Isopoh.Cryptography.Argon2;
 
 namespace Loto3000.Application.Services.Implementation
 {
@@ -10,18 +15,22 @@ namespace Loto3000.Application.Services.Implementation
         private readonly IRepository<Player> playerRepository;
         private readonly IRepository<TransactionTracker> transactionsRepository;
         private readonly IRepository<Draw> drawRepository;
-        private readonly IMapper mapper; 
+        private readonly IMapper mapper;
+        private readonly IHashids hashids;
+
         public PlayerService(
             IRepository<Player> playerRepository, 
             IRepository<TransactionTracker> transactionsRepository, 
             IRepository<Draw> drawRepository, 
-            IMapper mapper
+            IMapper mapper,
+            IHashids hashids
             )
         {
             this.playerRepository = playerRepository;
             this.transactionsRepository = transactionsRepository;
             this.drawRepository = drawRepository;
-            this.mapper = mapper;   
+            this.mapper = mapper;
+            this.hashids = hashids;
         }
         public PlayerDto GetPlayer(int id)
         {
@@ -57,6 +66,8 @@ namespace Loto3000.Application.Services.Implementation
             }
 
             var player = mapper.Map<Player>(dto);
+            player.Password = Argon2.Hash(dto.Password);
+
             playerRepository.Create(player);
 
             return mapper.Map<PlayerDto>(dto);
@@ -76,9 +87,9 @@ namespace Loto3000.Application.Services.Implementation
             }
 
             #region promo offer
-            _ = player.TransactionTracker.Count==0? player.Credits += dto.Credits*2 : player.Credits += dto.Credits;
+            _ = player.TransactionTracker.Count == 0 ? player.Credits += dto.Credits * 2 : player.Credits += dto.Credits;
 
-            if((player.TransactionTracker.Count + 1) % 10 == 0)
+            if ((player.TransactionTracker.Count + 1) % 10 == 0)
             {
                 player.Credits += 100;
             }
@@ -94,14 +105,18 @@ namespace Loto3000.Application.Services.Implementation
         }
         public IEnumerable<TransactionTrackerDto> GetPlayerTransactions(int id)
         {
-            var player = mapper.Map<PlayerDto>(playerRepository.GetById(id));
-            if (player == null)
-            {
-                throw new Exception("Player not found");
-            }
+            //var player = mapper.Map<PlayerDto>(playerRepository.GetById(id));
+            //if (player == null)
+            //{
+            //    throw new Exception("Player not found");
+            //}
 
-            var transactions = player.TransactionTracker
-                                     .Select(t => mapper.Map<TransactionTrackerDto>(t));
+            //var transactions = player.TransactionTracker
+            //                         .Select(t => mapper.Map<TransactionTrackerDto>(t));
+
+            var transactions = transactionsRepository.GetAll()
+                                                     .Where(t => t.PlayerId == id)
+                                                     .Select(t => mapper.Map<TransactionTrackerDto>(t));
 
             return transactions.ToList();
         }
@@ -114,10 +129,83 @@ namespace Loto3000.Application.Services.Implementation
             }
 
             var draw = drawRepository.GetAll().WhereActiveDraw().FirstOrDefault();
-            var ticket = player.CreateTicket(dto.CombinationNumbers.ToArray(), draw);
+
+            var ticket = player.CreateTicket(dto.CombinationNumbers, draw);
             playerRepository.Update(player);
 
             return mapper.Map<TicketDto>(ticket);
+        }
+        public void ChangePassword(ChangePasswordDto dto, int id)
+        {
+            if (dto.OldPassword == dto.Password)
+            {
+                throw new Exception("Old password can not be the same as the new password");
+            }
+
+            var player = playerRepository.GetById(id);
+
+            if(player == null)
+            {
+                throw new Exception("User doesn't exist");
+            }
+
+            if (player.Password != Argon2.Hash(dto.OldPassword))
+            {
+                throw new Exception("Old password is wrong");
+            }
+
+            player.Password = Argon2.Hash(dto.Password);
+
+            playerRepository.Update(player);
+        }
+        public void ForgotPassword(ForgotPasswordDto dto, string url)
+        {
+            var player = playerRepository.GetAll().FirstOrDefault(x => x.Email == dto.Email);
+            if (player == null)
+            {
+                throw new Exception("Player not found");
+            }
+            var code = hashids.Encode(player.Id);
+
+            //emailsender TO DO
+
+            player.SetForgotPasswordCode(code);
+
+            playerRepository.Update(player);
+        }
+        public PlayerDto GetPlayerByCode(string code)
+        {
+            var id = hashids.DecodeSingle(code);
+
+            var player = playerRepository.GetById(id);
+
+            if (player == null)
+            {
+                throw new Exception("Player not found");
+            }
+
+            return mapper.Map<PlayerDto>(player);
+        }
+
+        public void UpdatePasswordByCode(UpdatePasswordDto dto, string code)
+        {
+            var id = hashids.DecodeSingle(code);
+            if (dto.Id != id)
+            {
+                throw new Exception("Unauthorized");
+            }
+
+            var player = playerRepository.GetById(id);
+
+            if (player == null)
+            {
+                throw new Exception("User doesn't exist");
+            }
+
+            player.ClearForgotPasswordCode();
+            player.Password = Argon2.Hash(dto.Password);
+
+            playerRepository.Update(player);
         }
         public void DeletePlayer(int id)
         {

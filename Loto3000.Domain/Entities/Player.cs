@@ -1,4 +1,4 @@
-﻿namespace Loto3000.Domain.Models
+﻿namespace Loto3000.Domain.Entities
 {
     public class Player : User
     {
@@ -14,11 +14,11 @@
         }
         public Ticket CreateTicket(int[] numbers, Draw draw)
         {
-            if(draw == null)
+            if (draw == null)
             {
                 throw new Exception("There is no active draw.");
             }
-            if(this.Credits < TicketPrice)
+            if (this.Credits < TicketPrice)
             {
                 throw new Exception("Not enough credits to buy ticket");
             }
@@ -34,6 +34,18 @@
         public double Credits { get; set; }
         public DateTime DateOfBirth { get; set; }
         public IList<TransactionTracker> TransactionTracker { get; set; } = new List<TransactionTracker>();
-        public IList<Ticket> Tickets { get; set; } = new List<Ticket>();    
+        public IList<Ticket> Tickets { get; set; } = new List<Ticket>();
+        public string? ForgotPasswordCode { get; private set; }
+        public DateTime? ForgotPasswordCodeCreated { get; private set; }
+        public void SetForgotPasswordCode(string code)
+        {
+            ForgotPasswordCode = code;
+            ForgotPasswordCodeCreated = DateTime.Now;
+        }
+        public void ClearForgotPasswordCode()
+        {
+            ForgotPasswordCode = null;
+            ForgotPasswordCodeCreated = null;
+        }
     }
 }

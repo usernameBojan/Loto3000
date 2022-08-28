@@ -1,4 +1,4 @@
-﻿using Loto3000.Domain.Models;
+﻿using Loto3000.Domain.Entities;
 
 namespace Loto3000.Infrastructure
 {
