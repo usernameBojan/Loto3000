@@ -12,7 +12,7 @@ public class Ticket : IEntity
     {
         IList<Combination> combs = new List<Combination>();
 
-        if(nums.Length < 7)
+        if(nums.Length != 7)
         {
             throw new Exception("Ticket combination must contain 7 numbers.");
         }
@@ -34,7 +34,7 @@ public class Ticket : IEntity
         CombinationNumbers = combs;
     }
     public int Id { get; set; }
-    public IEnumerable<Combination> CombinationNumbers { get; set; } = new List<Combination>();
+    public IList<Combination> CombinationNumbers { get; set; } = new List<Combination>();
     public Player? Player { get; set; }
     public Draw? Draw { get; set; }
 }

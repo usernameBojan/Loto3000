@@ -12,7 +12,7 @@ namespace Loto3000.Application.Services
         PlayerDto RegisterPlayer(RegisterPlayerDto dto);
         void BuyCredits(BuyCreditsDto dto, int id);
         IEnumerable<TransactionTrackerDto> GetPlayerTransactions(int id);
-        TicketDto CreateTicket(CreateTicketDto dto, int id);
+        TicketDto CreateTicket(CreateTicketDto dto, int id, int drawId);
         void DeletePlayer(int id);
     }
 }

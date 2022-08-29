@@ -105,22 +105,13 @@ namespace Loto3000.Application.Services.Implementation
         }
         public IEnumerable<TransactionTrackerDto> GetPlayerTransactions(int id)
         {
-            //var player = mapper.Map<PlayerDto>(playerRepository.GetById(id));
-            //if (player == null)
-            //{
-            //    throw new Exception("Player not found");
-            //}
-
-            //var transactions = player.TransactionTracker
-            //                         .Select(t => mapper.Map<TransactionTrackerDto>(t));
-
             var transactions = transactionsRepository.GetAll()
                                                      .Where(t => t.PlayerId == id)
                                                      .Select(t => mapper.Map<TransactionTrackerDto>(t));
 
             return transactions.ToList();
         }
-        public TicketDto CreateTicket(CreateTicketDto dto, int id)
+        public TicketDto CreateTicket(CreateTicketDto dto, int id, int drawId)
         {
             var player = playerRepository.GetById(id);
             if (player == null)
@@ -128,7 +119,7 @@ namespace Loto3000.Application.Services.Implementation
                 throw new Exception("Player not found.");
             }
 
-            var draw = drawRepository.GetAll().WhereActiveDraw().FirstOrDefault();
+            var draw = drawRepository.GetAll().WhereActiveDraw().FirstOrDefault() ?? throw new Exception("No draws yet.");
 
             var ticket = player.CreateTicket(dto.CombinationNumbers, draw);
             playerRepository.Update(player);

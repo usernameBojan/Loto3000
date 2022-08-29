@@ -4,7 +4,6 @@ namespace Loto3000.Application.Dto.Tickets
 {
     public class CreateTicketDto
     {
-        public int Id { get; set; }
         [Required]
         public string PlayerName { get; set; } = string.Empty;
         [Required]

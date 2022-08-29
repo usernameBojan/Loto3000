@@ -10,25 +10,20 @@ using System.Collections;
 
 namespace Loto3000.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class PlayerController : ControllerBase
     {
         private readonly IPlayerService service;
-        private readonly IHashids hashids;
 
-        public PlayerController(IPlayerService service, IHashids hashids)
+        public PlayerController(IPlayerService service)
         {
             this.service = service;
-            this.hashids = hashids;
         }
+
         [HttpGet("{id:int}")]
         public ActionResult<PlayerDto> GetPlayer(int id)
         {
-            //var source = (int)id;
-            //(string)id = hashids.Encode(id);
-            //var sourceId = hashids.DecodeSingle(hashed);
-
             try
             {
                 return Ok(service.GetPlayer(id));
@@ -106,7 +101,7 @@ namespace Loto3000.Controllers
 
             try 
             { 
-                var ticket = service.CreateTicket(dto, id);
+                var ticket = service.CreateTicket(dto, id, 1);
                 return Created($"api/v1/player/{id}/ticket/{ticket.Id}/", ticket);
                 //return Created($"api/v1/tickets", ticket);
             }

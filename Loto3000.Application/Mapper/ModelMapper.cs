@@ -5,6 +5,7 @@ using Loto3000.Application.Dto.Transactions;
 using Loto3000.Application.Dto.PlayerAccountManagment;
 using Loto3000.Application.Dto.Tickets;
 using Loto3000.Domain.Entities;
+using Loto3000.Application.Dto.Draw;
 
 namespace Loto3000.Application.Mapper
 {
@@ -45,6 +46,8 @@ namespace Loto3000.Application.Mapper
                 x.CreateMap<CreateTicketDto, Ticket>();
 
                 x.CreateMap<CreateTicketDto, TicketDto>();
+
+                x.CreateMap<Draw, DrawDto>();
             });
 
             return cfg;
