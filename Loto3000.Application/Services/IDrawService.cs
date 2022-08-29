@@ -7,6 +7,5 @@ namespace Loto3000.Application.Services
         DrawDto ActivateDrawSession();
         DrawDto InitiateDraw();
         DrawDto GetDraw(int id);
-        //DrawDto GetDraw();
     }
 }

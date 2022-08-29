@@ -26,12 +26,6 @@ namespace Loto3000.Application.Services.Implementation
 
             return mapper.Map<DrawDto>(draw);
         }
-        //public DrawDto GetDraw()
-        //{
-        //    var draw = drawRepository.GetAll().WhereActiveDraw().FirstOrDefault();
-
-        //    return mapper.Map<DrawDto>(draw);
-        //}
         public DrawDto ActivateDrawSession() 
         {
             int sequence = 1;

@@ -16,11 +16,11 @@ namespace Loto3000.Application.Dto.Admin
             "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$",
             ErrorMessage = 
             "Password must contain at least one uppercase letter, one lowercase letter, one number and can't be shorter than 8 characters.")]
-        public string Password { get; set; } = string.Empty; // да се хашира 
+        public string Password { get; set; } = string.Empty;
         public string AdminCredentials { get; set; } = string.Empty;
         [RegularExpression(
             "^(\\d{12,15})$",
             ErrorMessage = "Authorization Code must be digits only and must conatin minimum twelve and maximum fifteen digits.")]
-        public string AuthorizationCode { get; set; } = string.Empty; // да се хашира 
+        public string AuthorizationCode { get; set; } = string.Empty;  
     }
 }

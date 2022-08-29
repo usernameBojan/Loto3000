@@ -13,7 +13,6 @@ namespace Loto3000.Application.Dto.Player
         public string Email { get; set; } = string.Empty;
         public double Credits { get; set; }
         public DateTime DateOfBirth { get; set; }
-        //[JsonIgnore]
         public IEnumerable<TicketDto> Tickets { get; set; } = new List<TicketDto>();
         public IEnumerable<TransactionTrackerDto> TransactionTracker { get; set; } = new List<TransactionTrackerDto>();
     }
