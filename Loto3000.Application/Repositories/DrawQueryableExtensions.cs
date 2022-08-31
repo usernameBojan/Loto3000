@@ -7,7 +7,7 @@ namespace Loto3000.Application.Repositories
         public static IEnumerable<Draw> WhereActiveDraw(this IEnumerable<Draw> query)
         {
             var date = DateTime.Now;
-            return query.Where(x => x.Session?.Start <= date && x.Session.End >= date);
+            return query.Where(x => x.SessionStart <= date && x.SessionEnd >= date);
         }
     }
 }

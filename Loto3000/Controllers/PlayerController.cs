@@ -101,12 +101,12 @@ namespace Loto3000.Controllers
 
             try 
             { 
-                var ticket = service.CreateTicket(dto, id, 1);
+                var ticket = service.CreateTicket(dto, id);
                 return Created($"api/v1/player/{id}/ticket/{ticket.Id}/", ticket);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest($"{ex}");
             }
         }
 

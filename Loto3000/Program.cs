@@ -21,7 +21,7 @@ builder.Services.AddScoped<IDrawService, DrawService>();
 builder.Services.AddScoped<IRepository<Admin>, BaseRepository<Admin>>();
 builder.Services.AddScoped<IRepository<Player>, BaseRepository<Player>>();
 builder.Services.AddScoped<IRepository<Draw>, BaseRepository<Draw>>();
-builder.Services.AddScoped<IRepository<Session>, BaseRepository<Session>>();
+//builder.Services.AddScoped<IRepository<Session>, BaseRepository<Session>>();
 builder.Services.AddScoped<IRepository<TransactionTracker>, BaseRepository<TransactionTracker>>();
 //builder.Services.AddScoped<IRepository<Admin>, AdminRepository>();
 //builder.Services.AddScoped<IRepository<Player>, PlayerRepository>();

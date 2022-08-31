@@ -35,9 +35,9 @@ namespace Loto3000.Controllers
                 service.ActivateDrawSession();
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest($"{ex}");
             }
         }
 

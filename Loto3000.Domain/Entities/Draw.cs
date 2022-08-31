@@ -5,20 +5,23 @@ namespace Loto3000.Domain.Entities
     public class Draw : IEntity
     {
         public Draw() { }
-        public Draw(int drawOrderNum, IList<Ticket> tickets, DateTime drawTime, Session session)
+        public Draw(/*int drawOrderNum, */IList<Ticket> tickets, DateTime drawTime, DateTime start, DateTime end)
         {
-            DrawSequenceNumber = drawOrderNum;
+            //DrawSequenceNumber = drawOrderNum;
             Tickets = tickets;
             DrawTime = drawTime;
-            Session = session;
+            SessionStart = start;
+            SessionEnd = end;
         }
         public int Id { get; set; }
-        public int DrawSequenceNumber { get; set; }
+        //public int DrawSequenceNumber => Id;
         public IList<DrawNumbers> DrawNumbers { get; private set; } = new List<DrawNumbers>();
         public IList<Ticket> Tickets { get; set; } = new List<Ticket>();    
         public Prizes Prizes { get; set; }
         public DateTime DrawTime { get; set; }
-        public Session? Session { get; set; }
+        public DateTime SessionStart { get; set; }
+        public DateTime SessionEnd { get; set; }
+        //public Session? Session { get; set; }
         public void DrawNums()
         {
             List<DrawNumbers> drawNums = new List<DrawNumbers>();
@@ -38,7 +41,8 @@ namespace Loto3000.Domain.Entities
 
                 drawNums.Add(drawNumbers);
             }
-            _ = DateTime.Now.Day == Session?.End.Day ? DrawNumbers = drawNums : DrawNumbers = new List<DrawNumbers>();
+            _ = DateTime.Now.Day == SessionEnd.Day ? DrawNumbers = drawNums : DrawNumbers = new List<DrawNumbers>();
+            //_ = DateTime.Now.Day == Session?.End.Day ? DrawNumbers = drawNums : DrawNumbers = new List<DrawNumbers>();
             //DrawNumbers = drawNums;
         }
         public string DrawNumbersString()
@@ -47,13 +51,13 @@ namespace Loto3000.Domain.Entities
 
             if (DrawNumbers.Count == 0)
             {
-                drawNums = $"Draw is scheduled for {Session?.End.Date}.";
+                drawNums = $"Draw is scheduled for {SessionEnd.Date}.";
             }
             else
             {
                 for (int i = 0; i < DrawNumbers.Count; i++)
                 {
-                    _ = i != DrawNumbers.Count - 1 ? drawNums += $"{DrawNumbers[i]}, " : drawNums += $"{DrawNumbers[i]}.";
+                    _ = i != DrawNumbers.Count ? drawNums += $"{DrawNumbers[i]}, " : drawNums += $"{DrawNumbers[i]}.";
                 }
             };
 
