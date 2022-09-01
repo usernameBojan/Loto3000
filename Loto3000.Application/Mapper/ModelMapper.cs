@@ -32,7 +32,8 @@ namespace Loto3000.Application.Mapper
 
                 x.CreateMap<EditAdminDto, AdminDto>();
 
-                x.CreateMap<Player, PlayerDto>();
+                x.CreateMap<Player, PlayerDto>()
+                .ForMember(m => m.Id, m => m.Ignore());
 
                 x.CreateMap<RegisterPlayerDto, Player>()
                 .ForMember(m => m.Password, m => m.Ignore());
@@ -46,6 +47,8 @@ namespace Loto3000.Application.Mapper
                 x.CreateMap<CreateTicketDto, Ticket>();
 
                 x.CreateMap<CreateTicketDto, TicketDto>();
+
+                x.CreateMap<Ticket, TicketDto>();
 
                 x.CreateMap<Draw, DrawDto>();
             });

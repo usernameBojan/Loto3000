@@ -21,7 +21,6 @@ public class Ticket : IEntity
         {
             Combination combination = new Combination();
 
-            combination.Id = i;
             if (nums[i] < 1 || nums[i] > 37)
             {
                 throw new Exception("Number is not valid, please choose a number between 1 and 37.");

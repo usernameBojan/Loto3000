@@ -39,7 +39,7 @@ namespace Loto3000.Application.Services.Implementation
             {
                 throw new Exception("Player not found");
             }
-
+            
             return mapper.Map<PlayerDto>(player);
         }
         public IEnumerable<PlayerDto> GetPlayers()
@@ -119,8 +119,7 @@ namespace Loto3000.Application.Services.Implementation
                 throw new Exception("Player not found.");
             }
 
-            //var draw = drawRepository.GetAll().WhereActiveDraw().FirstOrDefault() ?? throw new Exception("No draws yet.");
-            var draw = drawRepository.GetById(2) ?? throw new Exception("No draws yet.");
+            var draw = drawRepository.GetAll().WhereActiveDraw().FirstOrDefault() ?? throw new Exception("No draws yet.");
             var ticket = player.CreateTicket(dto.CombinationNumbers, draw);
             playerRepository.Update(player);
 

@@ -36,7 +36,7 @@ namespace Loto3000.Application.Services.Implementation
 
             //var session = new Session(new DateTime(2022, 7, 31), new DateTime(2022, 8, 31)); 
 
-            var draw = new Draw(new List<Ticket>(), new DateTime(2022, 8, 31), new DateTime(2022, 7, 31), new DateTime(2022, 8, 31)); // засеа со закуцани и едноставни вредности, понатаму да се автоматизира!!!
+            var draw = new Draw(new List<Ticket>(), new DateTime(2022, 9, 30), new DateTime(2022, 8, 31), new DateTime(2022, 9, 30)); // засеа со закуцани и едноставни вредности, понатаму да се автоматизира!!!
 
             //sessionRepository.Create(session);
             drawRepository.Create(draw);
