@@ -4,6 +4,7 @@ using Loto3000.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Loto3000.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220902150612_configure_draw")]
+    partial class configure_draw
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,7 +78,7 @@ namespace Loto3000.Infrastructure.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
-                    b.Property<int>("TicketId")
+                    b.Property<int?>("TicketId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -102,6 +104,9 @@ namespace Loto3000.Infrastructure.Migrations
                     b.Property<DateTime>("DrawTime")
                         .HasMaxLength(64)
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Prizes")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("SessionEnd")
                         .HasMaxLength(64)
@@ -197,13 +202,7 @@ namespace Loto3000.Infrastructure.Migrations
                     b.Property<int?>("DrawId")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumbersGuessed")
-                        .HasColumnType("int");
-
                     b.Property<int>("PlayerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Prize")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("TicketCreatedTime")
@@ -261,9 +260,7 @@ namespace Loto3000.Infrastructure.Migrations
                 {
                     b.HasOne("Loto3000.Domain.Entities.Ticket", null)
                         .WithMany("CombinationNumbers")
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TicketId");
                 });
 
             modelBuilder.Entity("Loto3000.Domain.Entities.DrawNumbers", b =>

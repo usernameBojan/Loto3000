@@ -2,10 +2,10 @@
 {
     public enum Prizes
     {
-        Car,
-        Vacation,
-        TV,
-        GiftCard_100,
-        GiftCard_50,
+        Car = 7,
+        Vacation = 6,
+        TV = 5,
+        GiftCard_100 = 4,
+        GiftCard_50 = 3,
     }
 }

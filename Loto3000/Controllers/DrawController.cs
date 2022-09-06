@@ -1,5 +1,7 @@
 ﻿using Loto3000.Application.Dto.Draw;
+using Loto3000.Application.Dto.Tickets;
 using Loto3000.Application.Services;
+using Loto3000.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +16,7 @@ namespace Loto3000.Controllers
         {
             this.service = service;
         }
+
         [HttpGet("{id:int}")]
         public ActionResult<DrawDto> GetDraw(int id)
         {
@@ -27,9 +30,27 @@ namespace Loto3000.Controllers
             }
         }
 
-        [HttpPost("activate")]
+        [HttpGet("draws")]
+        public ActionResult <IEnumerable<DrawDto>> GetAllDraws()
+        {
+            try
+            {
+                return Ok(service.GetDraws());
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost("activate-first-session")]
         public ActionResult<DrawDto> ActivateDrawSession()
         {
+            if(service.GetActiveDraw() != null)
+            {
+                return Unauthorized("This action serves for activating the first session only, every next session is activated automatically.");
+            }
+
             try
             {
                 service.ActivateDrawSession();
@@ -41,7 +62,7 @@ namespace Loto3000.Controllers
             }
         }
 
-        [HttpPost("initiate")]
+        [HttpPost("initiate-draw")]
         public ActionResult<DrawDto> InitiateDraw()
         {
             try
@@ -49,9 +70,9 @@ namespace Loto3000.Controllers
                 service.InitiateDraw();
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest($"{ex}");
             }
         }
     }

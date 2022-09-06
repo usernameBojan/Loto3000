@@ -6,8 +6,9 @@ namespace Loto3000.Application.Dto.Tickets
     public class TicketDto
     {
         public int Id { get; set; }
-        public string PlayerName { get; set; } = string.Empty;
-        //public IEnumerable<Combination> CombinationNumbers { get; set; } = new List<Combination>();
+        public string CombinationNumbersString { get; set; } = string.Empty;
+        public DateTime TicketCreatedTime { get; set; }
+        public int PlayerId { get; set; }
         public DrawDto? Draw { get; set; }
     }
 }

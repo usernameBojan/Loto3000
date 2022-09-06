@@ -89,7 +89,32 @@ namespace Loto3000.Controllers
             {
                 return NotFound();
             }
-            
+        }
+
+        [HttpGet("{id:int}/tickets")]
+        public ActionResult<IEnumerable> GetPlayerTickets(int id)
+        {
+            try
+            {
+                return Ok(service.GetPlayerTickets(id));
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet("{id:int}/ticket/{ticketId:int}")]
+        public ActionResult<IEnumerable> GetPlayerTicket(int id, int ticketId)
+        {
+            try
+            {
+                return Ok(service.GetPlayerTicket(id, ticketId));
+            }
+            catch (Exception ex)
+            {
+                return NotFound($"{ex}");
+            }
         }
         [HttpPost("{id:int}/create-ticket")]
         public ActionResult<TicketDto> CreateTicket([FromBody] CreateTicketDto dto, int id)

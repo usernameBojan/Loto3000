@@ -23,13 +23,13 @@ namespace Loto3000.Infrastructure.Repositories
             dbContext.SaveChanges();
             return entity;
         }
-        public IQueryable<T> GetAll()
+        public IQueryable<T> Query()
         {
             return dbContext.Set<T>();
         }
         public T? GetById(int id)
         {
-            return GetAll().FirstOrDefault(x => x.Id == id);
+            return Query().FirstOrDefault(x => x.Id == id);
         }
         public T Update(T entity)
         {

@@ -1,4 +1,6 @@
-﻿namespace Loto3000.Domain.Entities;
+﻿using Loto3000.Domain.Enums;
+
+namespace Loto3000.Domain.Entities;
 
 public class Ticket : IEntity
 {
@@ -8,11 +10,19 @@ public class Ticket : IEntity
         Player = player;
         Draw = draw;
     }
+    
+    public int Id { get; set; }
+    public string CombinationNumbersString { get; set; } = string.Empty;
+    public IList<Combination> CombinationNumbers { get; set; } = new List<Combination>();
+    public DateTime TicketCreatedTime { get; set; } = DateTime.Now;
+    public Player? Player { get; set; }
+    public int PlayerId { get; set; }
+    public Draw? Draw { get; set; }
+    public Prizes Prize { get; set; }
+    public int NumbersGuessed { get; set; }
     public void CombinationGenerator(int[] nums)
     {
-        IList<Combination> combs = new List<Combination>();
-
-        if(nums.Length != 7)
+        if (nums.Length != 7)
         {
             throw new Exception("Ticket combination must contain 7 numbers.");
         }
@@ -27,13 +37,33 @@ public class Ticket : IEntity
             }
             combination.Number = nums[i];
 
-            combs.Add(combination);
-        }
+            CombinationNumbers.Add(combination);
 
-        CombinationNumbers = combs;
+            _ = i != nums.Length - 1 ? CombinationNumbersString += $"{nums[i]}, " : CombinationNumbersString += $"{nums[i]}.";
+        }
     }
-    public int Id { get; set; }
-    public IList<Combination> CombinationNumbers { get; set; } = new List<Combination>();
-    public Player? Player { get; set; }
-    public Draw? Draw { get; set; }
+    public void GetPrize(int num)
+    {
+        switch (num)
+        {
+            case 7:
+                Prize = Prizes.Car;
+                break;
+            case 6:
+                Prize = Prizes.Vacation;
+                break;
+            case 5:
+                Prize = Prizes.TV;
+                break;
+            case 4:
+                Prize = Prizes.GiftCard_100;
+                break;
+            case 3:
+                Prize = Prizes.GiftCard_50;
+                break;
+            default:
+                Prize = default;
+                break;
+        }
+    }
 }

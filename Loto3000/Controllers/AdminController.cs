@@ -19,17 +19,6 @@ namespace Loto3000.Controllers
             this.service = service;
         }
 
-        [HttpGet("admins")]
-        public ActionResult<IEnumerable<AdminDto>> GetAdmins()
-        {
-            return Ok(service.GetAdmins());
-        }
-        [HttpGet("show-transactions")]
-        public ActionResult<IList<TransactionTrackerDto>> GetAllTransactions()
-        {
-            return Ok(service.GetAllTransactions());
-        }
-
         [HttpGet("{id:int}")]
         public ActionResult<AdminDto> GetAdmin(int id)
         {
@@ -42,7 +31,19 @@ namespace Loto3000.Controllers
                 return NotFound();
             }
         }
-
+        
+        [HttpGet("admins")]
+        public ActionResult<IEnumerable<AdminDto>> GetAdmins()
+        {
+            return Ok(service.GetAdmins());
+        }
+        
+        [HttpGet("show-transactions")]
+        public ActionResult<IList<TransactionTrackerDto>> GetAllTransactions()
+        {
+            return Ok(service.GetAllTransactions());
+        }
+       
         [HttpPost("create-admin")]
         public ActionResult<AdminDto> CreateAdmin([FromBody] CreateAdminDto dto)
         {
