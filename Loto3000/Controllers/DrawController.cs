@@ -1,5 +1,6 @@
 ﻿using Loto3000.Application.Dto.Draw;
 using Loto3000.Application.Dto.Tickets;
+using Loto3000.Application.Dto.Winners;
 using Loto3000.Application.Services;
 using Loto3000.Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -69,6 +70,19 @@ namespace Loto3000.Controllers
             {
                 service.InitiateDraw();
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"{ex}");
+            }
+        }
+
+        [HttpGet("winners-board")]
+        public ActionResult<IEnumerable<WinnersDto>> WinnersBoard()
+        {
+            try
+            {
+                return Ok(service.DisplayWinners());
             }
             catch (Exception ex)
             {

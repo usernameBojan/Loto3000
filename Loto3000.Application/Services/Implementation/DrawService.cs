@@ -110,11 +110,35 @@ namespace Loto3000.Application.Services.Implementation
             return mapper.Map<DrawDto>(draw);   
         }
 
-        //public IEnumerable<WinnersDto> DisplayWinners()
-        //{
-        //    var winners = new List<WinnersDto>();
+        public IEnumerable<WinnersDto> DisplayWinners()
+        {
+            const int LowestPrizeValue = 3;
 
-            
-        //}
+            var winners = new List<WinnersDto>();
+
+            var draw = drawRepository.Query().WhereConcludedDraw().FirstOrDefault() ?? throw new Exception("There are no concluded draws at the moment");
+
+            var eligibleTickets = ticketRepository.Query()
+                                                  .Include(x => x.Player)
+                                                  .Include(x => x.Draw)
+                                                  .Where(x => x.Draw.Id == draw.Id)
+                                                  .ToList();
+
+            foreach(var ticket in eligibleTickets)
+            {
+                if(((int)ticket.Prize) >= LowestPrizeValue)
+                {
+                    var winner = new WinnersDto();
+
+                    winner.PlayerName = ticket.Player.FullName;
+                    winner.CombinationNumbersString = ticket.CombinationNumbersString;
+                    winner.Prize = ticket.Prize;
+                    
+                    winners.Add(winner);
+                }
+            }
+
+            return winners;
+        }
     }
 }
