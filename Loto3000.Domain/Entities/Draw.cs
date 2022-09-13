@@ -1,6 +1,4 @@
-﻿using Loto3000.Domain.Enums;
-
-namespace Loto3000.Domain.Entities
+﻿namespace Loto3000.Domain.Entities
 {
     public class Draw : IEntity
     {
@@ -40,7 +38,7 @@ namespace Loto3000.Domain.Entities
         //GUIDELINES FOR TESTING
         //MAKE SURE THERE ARE NO DRAWS IN DATABASE
         //COMMENT THE FIRST IF STATEMENT IN InitiateDraw() IN DrawService.cs WHICH CHECKS IF DRAW DATE IS EQUAL TO TODAYS DATE
-        // CHANGE THE DrawTime.Day CONDITION IN _ = DateTime.Now.Day == DrawTime.Day? IN DrawNums() METHOD (line 43) WITH THE NUMBER VALUE OF TODAYS DATE
+        // CHANGE THE DrawTime.Day CONDITION IN _ = DateTime.Now.Day == DrawTime.Day? IN DrawNums() METHOD (line 35) WITH THE NUMBER VALUE OF TODAYS DATE
         //FIRST, DECOMMENT THE COMMENTED CODE BLOCK IN SetDrawSession() AND COMMENT THE CODE BLOCK BELLOW
         //ACTIVATE DRAW WITH ActivateFirstDraw ACTION IN DrawController.cs WITH SWAGGER OR POSTMAN (FRONT-END IMPLEMENTATION TO DO)
         //RETURN TO Draw.cs

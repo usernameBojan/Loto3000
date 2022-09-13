@@ -1,6 +1,6 @@
 ﻿using Loto3000.Domain.Entities;
 
-namespace Loto3000.Application.Repositories
+namespace Loto3000.Application.Utilities
 {
     public static class DrawQueryableExtensions
     {
@@ -9,7 +9,6 @@ namespace Loto3000.Application.Repositories
             var date = DateTime.Now;
             return query.Where(x => x.SessionStart <= date && x.SessionEnd >= date);
         }
-
         public static IQueryable<Draw> WhereConcludedDraw(this IQueryable<Draw> query)
         {
             var date = DateTime.Now;

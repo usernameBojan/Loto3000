@@ -19,12 +19,10 @@ namespace Loto3000.Application.Mapper
                 x.CreateMap<Admin, AdminDto>();
 
                 x.CreateMap<AdminDto, Admin>()
-                .ForMember(m => m.Password, m => m.Ignore())
-                .ForMember(y => y.AuthorizationCode, y => y.Ignore());
+                .ForMember(m => m.Password, m => m.Ignore());
 
                 x.CreateMap<CreateAdminDto, Admin>()
-                .ForMember(m => m.Password, m => m.Ignore())
-                .ForMember(y => y.AuthorizationCode, y => y.Ignore());
+                .ForMember(m => m.Password, m => m.Ignore());
 
                 x.CreateMap<CreateAdminDto, AdminDto>();
 

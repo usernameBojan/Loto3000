@@ -1,13 +1,12 @@
-﻿using Loto3000.Application.Dto.Draw;
-using Loto3000.Application.Dto.Tickets;
-using Loto3000.Application.Dto.Winners;
+﻿using Loto3000.Application.Utilities;
+using Loto3000.Application.Dto.Draw;
 using Loto3000.Application.Services;
-using Loto3000.Domain.Entities;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Loto3000.Controllers
 {
+    [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class DrawController : ControllerBase
@@ -21,73 +20,30 @@ namespace Loto3000.Controllers
         [HttpGet("{id:int}")]
         public ActionResult<DrawDto> GetDraw(int id)
         {
-            try
-            {
-                return Ok(service.GetDraw(id));
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            return Ok(service.GetDraw(id));
         }
 
         [HttpGet("draws")]
-        public ActionResult <IEnumerable<DrawDto>> GetAllDraws()
+        public ActionResult<IEnumerable<DrawDto>> GetAllDraws()
         {
-            try
-            {
-                return Ok(service.GetDraws());
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            return Ok(service.GetDraws());
         }
 
         [HttpPost("activate-first-session")]
         public ActionResult<DrawDto> ActivateDrawSession()
         {
-            if(service.GetActiveDraw() != null)
+            if (service.GetActiveDraw() != null)
             {
                 return Unauthorized("This action serves for activating the first session only, every next session is activated automatically.");
             }
 
-            try
-            {
-                service.ActivateDrawSession();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"{ex}");
-            }
+            return Ok(service.ActivateDrawSession());
         }
 
         [HttpPost("initiate-draw")]
         public ActionResult<DrawDto> InitiateDraw()
         {
-            try
-            {
-                service.InitiateDraw();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"{ex}");
-            }
-        }
-
-        [HttpGet("winners-board")]
-        public ActionResult<IEnumerable<WinnersDto>> WinnersBoard()
-        {
-            try
-            {
-                return Ok(service.DisplayWinners());
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"{ex}");
-            }
+            return Ok(service.InitiateDraw());
         }
     }
 }

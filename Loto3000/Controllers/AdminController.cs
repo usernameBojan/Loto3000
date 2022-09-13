@@ -1,14 +1,13 @@
-﻿using Loto3000.Application.Dto.Admin;
+﻿using Loto3000.Application.Utilities;
+using Loto3000.Application.Dto.Admin;
 using Loto3000.Application.Dto.Transactions;
-using Loto3000.Application.Dto.PlayerAccountManagment;
-using Loto3000.Application.Dto.Tickets;
 using Loto3000.Application.Services;
-using Loto3000.Domain.Entities;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Loto3000.Controllers
 {
+    [Authorize]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -19,31 +18,35 @@ namespace Loto3000.Controllers
             this.service = service;
         }
 
+        [Authorize(Roles = SystemRoles.SuperAdmin)]
         [HttpGet("{id:int}")]
         public ActionResult<AdminDto> GetAdmin(int id)
         {
-            try
-            {
-                return Ok(service.GetAdmin(id));
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            return Ok(service.GetAdmin(id));
         }
-        
+
+        [Authorize(Roles = SystemRoles.SuperAdmin)]
         [HttpGet("admins")]
         public ActionResult<IEnumerable<AdminDto>> GetAdmins()
         {
             return Ok(service.GetAdmins());
         }
-        
+
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
         [HttpGet("show-transactions")]
         public ActionResult<IList<TransactionTrackerDto>> GetAllTransactions()
         {
             return Ok(service.GetAllTransactions());
         }
-       
+
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
+        [HttpGet("show-tickets")]
+        public ActionResult<IList<TransactionTrackerDto>> GetAllTickets()
+        {
+            return Ok(service.GetAllTickets());
+        }
+
+        [Authorize(Roles = SystemRoles.SuperAdmin)]
         [HttpPost("create-admin")]
         public ActionResult<AdminDto> CreateAdmin([FromBody] CreateAdminDto dto)
         {
@@ -53,9 +56,10 @@ namespace Loto3000.Controllers
             }
 
             var admin = service.CreateAdmin(dto);
-            return Created($"api/v1/login/", admin);
+            return Created($"api/v1/home/login/", admin);
         }
 
+        [Authorize(Roles = SystemRoles.SuperAdmin)]
         [HttpPatch("update-admin/{id:int}")]
         public ActionResult<EditAdminDto> EditAdmin([FromBody] EditAdminDto dto, int id)
         {
@@ -63,29 +67,17 @@ namespace Loto3000.Controllers
             {
                 return BadRequest(dto);
             }
-            try
-            {
-                var note = service.EditAdmin(dto, id);
-                return Ok(note);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+
+            var admin = service.EditAdmin(dto, id);
+            return Ok(admin);
         }
 
+        [Authorize(Roles = SystemRoles.SuperAdmin)]
         [HttpDelete("admins/{id:int}")]
         public ActionResult DeleteAdmin(int id)
         {
-            try
-            {
-                service.DeleteAdmin(id);
-                return Ok();
-            }
-            catch
-            {
-                return NotFound();
-            }
+            service.DeleteAdmin(id);
+            return Ok();
         }
     }
 }

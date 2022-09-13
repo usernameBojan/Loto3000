@@ -6,16 +6,8 @@
         private const int MinimumDepositAmount = 5;
         private const int FirstTransactionPromoOffer = 2;
         private const int EachTenthTransactionPromoOffer = 100;
-        private bool IsTenthTransaction => (this.TransactionTracker.Count + 1) % 10 == 0;
+        private bool IsTenthTransaction => (TransactionTracker.Count + 1) % 10 == 0;
         public Player() { }
-        public Player
-            (string firstName, string lastName, string username, string password, string email, double credits, DateTime dateOfBirth) 
-            : base(firstName, lastName, username, password)
-        {
-            Email = email;
-            Credits = credits;
-            DateOfBirth = dateOfBirth;
-        }
         public string Email { get; set; } = string.Empty;
         public double Credits { get; set; }
         public DateTime DateOfBirth { get; set; }
@@ -35,16 +27,16 @@
         }
         public void BuyCredits(double deposit, double credits)
         {
-            if(deposit < MinimumDepositAmount)
+            if (deposit < MinimumDepositAmount)
             {
                 throw new Exception("Deposited amount must be higher than 5$.");
             }
 
-            _ = this.TransactionTracker.Count == 0 ? this.Credits += credits * FirstTransactionPromoOffer : this.Credits += credits;
-            
+            _ = TransactionTracker.Count == 0 ? Credits += credits * FirstTransactionPromoOffer : Credits += credits;
+
             if (IsTenthTransaction)
             {
-                this.Credits += EachTenthTransactionPromoOffer;
+                Credits += EachTenthTransactionPromoOffer;
             }
         }
         public Ticket CreateTicket(int[] numbers, Draw draw)
@@ -53,14 +45,17 @@
             {
                 throw new Exception("There is no active draw.");
             }
-            if (this.Credits < TicketPrice)
+
+            if (Credits < TicketPrice)
             {
                 throw new Exception("Not enough credits to buy ticket");
             }
-            var ticket = new Ticket(this, draw);
-            this.Credits -= TicketPrice;
-            ticket.CombinationGenerator(numbers);
 
+            var ticket = new Ticket(this, draw);
+            
+            Credits -= TicketPrice;
+            ticket.CombinationGenerator(numbers);
+            
             Tickets.Add(ticket);
 
             return ticket;

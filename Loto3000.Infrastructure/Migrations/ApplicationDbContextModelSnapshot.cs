@@ -30,39 +30,34 @@ namespace Loto3000.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("AdminCredentials")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuthorizationCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Admins");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Admin");
+                    b.ToTable("Admins", (string)null);
                 });
 
             modelBuilder.Entity("Loto3000.Domain.Entities.Combination", b =>
@@ -83,7 +78,7 @@ namespace Loto3000.Infrastructure.Migrations
 
                     b.HasIndex("TicketId");
 
-                    b.ToTable("Combination");
+                    b.ToTable("Combination", (string)null);
                 });
 
             modelBuilder.Entity("Loto3000.Domain.Entities.Draw", b =>
@@ -113,7 +108,7 @@ namespace Loto3000.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Draws");
+                    b.ToTable("Draws", (string)null);
                 });
 
             modelBuilder.Entity("Loto3000.Domain.Entities.DrawNumbers", b =>
@@ -134,7 +129,7 @@ namespace Loto3000.Infrastructure.Migrations
 
                     b.HasIndex("DrawId");
 
-                    b.ToTable("DrawNumbers");
+                    b.ToTable("DrawNumbers", (string)null);
                 });
 
             modelBuilder.Entity("Loto3000.Domain.Entities.Player", b =>
@@ -146,18 +141,22 @@ namespace Loto3000.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<double>("Credits")
+                        .HasMaxLength(50)
                         .HasColumnType("float");
 
                     b.Property<DateTime>("DateOfBirth")
+                        .HasMaxLength(256)
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ForgotPasswordCode")
                         .HasColumnType("nvarchar(max)");
@@ -167,9 +166,50 @@ namespace Loto3000.Infrastructure.Migrations
 
                     b.Property<string>("LastName")
                         .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Players", (string)null);
+                });
+
+            modelBuilder.Entity("Loto3000.Domain.Entities.SuperAdmin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -179,7 +219,18 @@ namespace Loto3000.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Players");
+                    b.ToTable("SuperAdmin", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 2,
+                            FirstName = "Super",
+                            LastName = "Admin",
+                            Password = "123456789101112",
+                            Role = "SuperAdmin",
+                            Username = "SystemAdministrator"
+                        });
                 });
 
             modelBuilder.Entity("Loto3000.Domain.Entities.Ticket", b =>
@@ -192,21 +243,24 @@ namespace Loto3000.Infrastructure.Migrations
 
                     b.Property<string>("CombinationNumbersString")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<int?>("DrawId")
                         .HasColumnType("int");
 
                     b.Property<int>("NumbersGuessed")
+                        .HasMaxLength(10)
                         .HasColumnType("int");
 
-                    b.Property<int>("PlayerId")
+                    b.Property<int?>("PlayerId")
                         .HasColumnType("int");
 
                     b.Property<int>("Prize")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("TicketCreatedTime")
+                        .HasMaxLength(256)
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -215,7 +269,7 @@ namespace Loto3000.Infrastructure.Migrations
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("Tickets");
+                    b.ToTable("Tickets", (string)null);
                 });
 
             modelBuilder.Entity("Loto3000.Domain.Entities.TransactionTracker", b =>
@@ -243,18 +297,7 @@ namespace Loto3000.Infrastructure.Migrations
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("Transactions");
-                });
-
-            modelBuilder.Entity("Loto3000.Domain.Entities.SuperAdmin", b =>
-                {
-                    b.HasBaseType("Loto3000.Domain.Entities.Admin");
-
-                    b.Property<string>("SuperAdminCredentials")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("SuperAdmin");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("Loto3000.Domain.Entities.Combination", b =>
@@ -281,9 +324,7 @@ namespace Loto3000.Infrastructure.Migrations
 
                     b.HasOne("Loto3000.Domain.Entities.Player", "Player")
                         .WithMany("Tickets")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PlayerId");
 
                     b.Navigation("Draw");
 

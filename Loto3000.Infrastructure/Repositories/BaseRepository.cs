@@ -11,9 +11,23 @@ namespace Loto3000.Infrastructure.Repositories
         {
             this.dbContext = dbContext;
         }
+        public T? GetById(int id)
+        {
+            return Query().FirstOrDefault(x => x.Id == id);
+        }
+        public IQueryable<T> Query()
+        {
+            return dbContext.Set<T>();
+        }
         public T Create(T entity)
         {
             dbContext.Add(entity);
+            dbContext.SaveChanges();
+            return entity;
+        }
+        public T Update(T entity)
+        {
+            dbContext.Update(entity);
             dbContext.SaveChanges();
             return entity;
         }
@@ -22,20 +36,6 @@ namespace Loto3000.Infrastructure.Repositories
             dbContext.Remove(entity);
             dbContext.SaveChanges();
             return entity;
-        }
-        public IQueryable<T> Query()
-        {
-            return dbContext.Set<T>();
-        }
-        public T? GetById(int id)
-        {
-            return Query().FirstOrDefault(x => x.Id == id);
-        }
-        public T Update(T entity)
-        {
-            dbContext.Update(entity);
-            dbContext.SaveChanges();
-            return entity;
-        }
+        }      
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Loto3000.Application.Dto.Draw;
-using Loto3000.Domain.Entities;
 
 namespace Loto3000.Application.Dto.Tickets
 {

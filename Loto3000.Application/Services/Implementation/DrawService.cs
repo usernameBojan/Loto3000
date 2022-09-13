@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using Loto3000.Application.Dto.Draw;
-using Loto3000.Application.Dto.Tickets;
 using Loto3000.Application.Dto.Winners;
+using Loto3000.Domain.Exceptions;
 using Loto3000.Application.Repositories;
+using Loto3000.Application.Utilities;
 using Loto3000.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,7 +35,7 @@ namespace Loto3000.Application.Services.Implementation
         }
         public DrawDto GetDraw(int id)
         {
-            var draw = drawRepository.GetById(id) ?? throw new Exception("draw not found");   
+            var draw = drawRepository.GetById(id) ?? throw new NotFoundException();   
 
             return mapper.Map<DrawDto>(draw);
         }
@@ -65,16 +66,16 @@ namespace Loto3000.Application.Services.Implementation
         //GO TO Draw.cs AND FOLLOW THE COMMENTS FOR GUIDELINES THERE
         public DrawDto InitiateDraw()
         {
-            var draw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new Exception("No draws yet.");
+            var draw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new NotFoundException("No draws yet.");
 
             if ((DateTime.Today.Day) != draw.DrawTime.Day)
             {
-                throw new Exception("Draw can't be initiated before the draw session ends.");
+                throw new ValidationException("Draw can't be initiated before the draw session ends.");
             }
 
             if (drawNumbersRepository.Query().Count() == 8)
             {
-                throw new Exception("One draw can only have one winning combination.");
+                throw new ValidationException("One draw can only have one winning combination.");
             }
 
             draw.DrawNums();
@@ -95,7 +96,7 @@ namespace Loto3000.Application.Services.Implementation
                                                         .ToList()
                                                         .Count;
 
-                ticket.GetPrize(ticket.NumbersGuessed);
+                ticket.AssignPrize(ticket.NumbersGuessed);
             }
 
             foreach(var ticket in validTickets)
@@ -116,7 +117,7 @@ namespace Loto3000.Application.Services.Implementation
 
             var winners = new List<WinnersDto>();
 
-            var draw = drawRepository.Query().WhereConcludedDraw().FirstOrDefault() ?? throw new Exception("There are no concluded draws at the moment");
+            var draw = drawRepository.Query().WhereConcludedDraw().FirstOrDefault() ?? throw new NotFoundException();
 
             var eligibleTickets = ticketRepository.Query()
                                                   .Include(x => x.Player)
