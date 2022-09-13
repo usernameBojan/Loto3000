@@ -26,10 +26,6 @@ namespace Loto3000.Application.Mapper
 
                 x.CreateMap<CreateAdminDto, AdminDto>();
 
-                x.CreateMap<EditAdminDto, Admin>();
-
-                x.CreateMap<EditAdminDto, AdminDto>();
-
                 x.CreateMap<Player, PlayerDto>();
 
                 x.CreateMap<RegisterPlayerDto, Player>()

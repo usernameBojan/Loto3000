@@ -9,13 +9,10 @@ namespace Loto3000.Infrastructure
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.ApplyConfiguration(new PlayerTypeConfiguration());
-            builder.ApplyConfiguration(new AdminTypeConfiguration());
-            builder.ApplyConfiguration(new SuperAdminTypeConfiguration());
-            builder.ApplyConfiguration(new DrawTypeConfiguration());
-            builder.ApplyConfiguration(new TicketTypeConfiguration());
+            builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         }
-        public DbSet<SuperAdmin> SuperAdmin {get; set;}
+        public DbSet<User> Users { get; set; }
+        public DbSet<SuperAdmin> SuperAdmin { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Ticket> Tickets { get; set; }

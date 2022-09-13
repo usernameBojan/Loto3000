@@ -11,17 +11,15 @@ namespace Loto3000.Application.Services.Implementation
 {
     public class AdminService : IAdminService
     {
+        private readonly IRepository<User> userRepository;
         private readonly IRepository<Admin> adminRepository;
-        private readonly IRepository<Player> playerRepository;
-        private readonly IRepository<SuperAdmin> superAdminRepository;
         private readonly IRepository<TransactionTracker> transactionsRepository;
         private readonly IRepository<Ticket> ticketRepository;
         private readonly IPasswordHasher passwordHasher;
         private readonly IMapper mapper;
         public AdminService(
+            IRepository<User> userRepository,
             IRepository<Admin> adminRepository,
-            IRepository<Player> playerRepository,
-            IRepository<SuperAdmin> superAdminRepository,
             IRepository<TransactionTracker> transactionsRepository,
             IRepository<Ticket> ticketRepository,
             IPasswordHasher passwordHasher,
@@ -29,8 +27,7 @@ namespace Loto3000.Application.Services.Implementation
 )
         {
             this.adminRepository = adminRepository;
-            this.playerRepository = playerRepository;
-            this.superAdminRepository = superAdminRepository;
+            this.userRepository = userRepository;
             this.transactionsRepository = transactionsRepository;
             this.ticketRepository = ticketRepository;
             this.passwordHasher = passwordHasher;
@@ -64,10 +61,7 @@ namespace Loto3000.Application.Services.Implementation
         {
             var admin = mapper.Map<Admin>(dto);
 
-            var players = playerRepository.Query();
-            var admins = adminRepository.Query();
-
-            IEnumerable<User> users = CombineUsersForRegisterAndLogin.Combine(players, admins);
+            var users = userRepository.Query();
 
             foreach(var user in users)
             {
@@ -81,15 +75,6 @@ namespace Loto3000.Application.Services.Implementation
             admin.Role = SystemRoles.Administrator;
 
             adminRepository.Create(admin);
-
-            return mapper.Map<AdminDto>(dto);
-        }
-        public AdminDto EditAdmin(EditAdminDto dto, int id)
-        {
-            var admin = adminRepository.GetById(id) ?? throw new NotFoundException();
-
-            admin = mapper.Map<Admin>(dto);
-            adminRepository.Update(admin);
 
             return mapper.Map<AdminDto>(dto);
         }

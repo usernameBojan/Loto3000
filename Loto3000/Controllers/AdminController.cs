@@ -60,19 +60,6 @@ namespace Loto3000.Controllers
         }
 
         [Authorize(Roles = SystemRoles.SuperAdmin)]
-        [HttpPatch("update-admin/{id:int}")]
-        public ActionResult<EditAdminDto> EditAdmin([FromBody] EditAdminDto dto, int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(dto);
-            }
-
-            var admin = service.EditAdmin(dto, id);
-            return Ok(admin);
-        }
-
-        [Authorize(Roles = SystemRoles.SuperAdmin)]
         [HttpDelete("admins/{id:int}")]
         public ActionResult DeleteAdmin(int id)
         {

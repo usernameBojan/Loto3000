@@ -39,7 +39,9 @@ namespace Loto3000.Infrastructure.EntityFramework.EntityTypeConfiguration
 
             builder.Property(p => p.DateOfBirth)
             .HasMaxLength(256)
-            .IsRequired();            
+            .IsRequired();
+
+            builder.ToTable("Players");
         }
     }
 }

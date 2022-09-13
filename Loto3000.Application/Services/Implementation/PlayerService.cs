@@ -14,9 +14,8 @@ namespace Loto3000.Application.Services.Implementation
 {
     public class PlayerService : IPlayerService
     {
+        private readonly IRepository<User> userRepository;
         private readonly IRepository<Player> playerRepository;
-        private readonly IRepository<Admin> adminRepository;
-        private readonly IRepository<SuperAdmin> superAdminRepository;
         private readonly IRepository<TransactionTracker> transactionsRepository;
         private readonly IRepository<Draw> drawRepository;
         private readonly IRepository<Ticket> ticketRepository;
@@ -25,8 +24,6 @@ namespace Loto3000.Application.Services.Implementation
         private readonly IHashids hashids;
         public PlayerService(
             IRepository<Player> playerRepository,
-            IRepository<Admin> adminRepository,
-            IRepository<SuperAdmin> superAdminRepository,
             IRepository<TransactionTracker> transactionsRepository,
             IRepository<Draw> drawRepository,
             IRepository<Ticket> ticketRepository,
@@ -36,8 +33,6 @@ namespace Loto3000.Application.Services.Implementation
             )
         {
             this.playerRepository = playerRepository;
-            this.adminRepository = adminRepository;
-            this.superAdminRepository = superAdminRepository;
             this.transactionsRepository = transactionsRepository;
             this.drawRepository = drawRepository;
             this.ticketRepository = ticketRepository;
@@ -67,10 +62,8 @@ namespace Loto3000.Application.Services.Implementation
         }
         public PlayerDto RegisterPlayer(RegisterPlayerDto dto)
         {
+            var users = userRepository.Query();
             var players = playerRepository.Query();
-            var admins = adminRepository.Query();
-
-            IEnumerable<User> users = CombineUsersForRegisterAndLogin.Combine(players, admins);
 
             foreach (var existingUser in users)
             {

@@ -28,6 +28,8 @@ namespace Loto3000.Infrastructure.EntityFramework.EntityTypeConfiguration
             builder.Property(p => p.Role)
             .HasMaxLength(50)
             .IsRequired();
+
+            builder.ToTable("Admins");
         }
     }
 }

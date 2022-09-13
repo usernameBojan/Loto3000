@@ -11,7 +11,6 @@ namespace Loto3000.Application.Services
         IEnumerable<TransactionTrackerDto> GetAllTransactions();
         public IEnumerable<TicketDto> GetAllTickets();
         AdminDto CreateAdmin(CreateAdminDto model);
-        AdminDto EditAdmin(EditAdminDto model, int id);
         void DeleteAdmin(int id);
     }
 }
