@@ -7,16 +7,19 @@ namespace Loto3000.Application.Services
 {
     public interface IPlayerService
     {
-        //PlayerDto GetPlayer(string username);
         PlayerDto GetPlayer(int id);
         IEnumerable<PlayerDto> GetPlayers();
         PlayerDto RegisterPlayer(RegisterPlayerDto dto);
+        void VerifyPlayer(string code);
         void BuyCredits(BuyCreditsDto dto, int id);
         TicketDto CreateTicket(CreateTicketDto dto, int id);
         TransactionTrackerDto GetPlayerTransaction(int id, int transactionId);
         IEnumerable<TransactionTrackerDto> GetPlayerTransactions(int id); 
         IEnumerable<TicketDto> GetPlayerTickets(int id);
-        public TicketDto GetPlayerTicket(int id, int ticketId);
+        TicketDto GetPlayerTicket(int id, int ticketId);
+        void ChangePassword(ChangePasswordDto dto, int id);
+        void ForgotPassword(ForgotPasswordDto dto);
+        void UpdatePasswordByCode(UpdatePasswordDto dto);
         void DeletePlayer(int id);
     }
 }

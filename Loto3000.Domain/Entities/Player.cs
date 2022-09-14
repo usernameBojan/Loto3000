@@ -14,7 +14,16 @@
         public IList<TransactionTracker> TransactionTracker { get; set; } = new List<TransactionTracker>();
         public IList<Ticket> Tickets { get; set; } = new List<Ticket>();
         public string? ForgotPasswordCode { get; private set; }
+        public string? VerificationCode { get; private set; }
         public DateTime? ForgotPasswordCodeCreated { get; private set; }
+        public void SetVerificationCode(string code)
+        {
+            VerificationCode = code;
+        }
+        public void ClearVerificationCode()
+        {
+            VerificationCode = null;
+        }
         public void SetForgotPasswordCode(string code)
         {
             ForgotPasswordCode = code;

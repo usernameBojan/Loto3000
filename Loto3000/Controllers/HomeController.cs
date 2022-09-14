@@ -34,6 +34,13 @@ namespace Loto3000.Controllers
             return Created($"api/v1/home/login/", dto);
         }
 
+        [HttpPost("register/verify")]
+        public ActionResult VerifyPlayer([FromBody] string code)
+        {
+            playerService.VerifyPlayer(code);
+            return Ok();
+        }
+
         [HttpPost("login")]
         public ActionResult<TokenDto> Login([FromBody] LoginDto login)
         {
@@ -41,7 +48,20 @@ namespace Loto3000.Controllers
 
             return Ok(token.Token);
         }
-        
+
+        [HttpPost("forgot-password")]
+        public ActionResult ForgotPassword([FromBody] ForgotPasswordDto dto)
+        {
+            playerService.ForgotPassword(dto);
+            return Ok();
+        }
+
+        [HttpPost("change-password-with-email-code")]
+        public ActionResult ChangePasswordByCode([FromBody] UpdatePasswordDto dto)
+        {
+            playerService.UpdatePasswordByCode(dto);
+            return Ok();
+        }
         [HttpGet("winners-board")]
         public ActionResult<IEnumerable<WinnersDto>> WinnersBoard()
         {

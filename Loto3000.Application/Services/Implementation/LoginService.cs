@@ -37,6 +37,12 @@ namespace Loto3000.Application.Services.Implementation
             {
                 throw new ValidationException("Wrong password?");
             }
+            #region verification - comment this code block to login without email verification
+            if (!user.IsVerified)
+            {
+                throw new ValidationException("User not verified");
+            }
+            #endregion
 
             return GenericAuthentication<User>.Authenticate(user.Id, user.FirstName, user.LastName, user.Role, configuration);
         }

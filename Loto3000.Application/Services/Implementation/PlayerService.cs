@@ -19,24 +19,29 @@ namespace Loto3000.Application.Services.Implementation
         private readonly IRepository<TransactionTracker> transactionsRepository;
         private readonly IRepository<Draw> drawRepository;
         private readonly IRepository<Ticket> ticketRepository;
-        private readonly IPasswordHasher passwordHasher;
+        private readonly IEmailSender emailSender;
+        private readonly IPasswordHasher hasher;
         private readonly IMapper mapper;
         private readonly IHashids hashids;
         public PlayerService(
+            IRepository<User> userRepository,
             IRepository<Player> playerRepository,
             IRepository<TransactionTracker> transactionsRepository,
             IRepository<Draw> drawRepository,
             IRepository<Ticket> ticketRepository,
-            IPasswordHasher passwordHasher,
+            IEmailSender emailSender,
+            IPasswordHasher hasher,
             IMapper mapper,
             IHashids hashids
             )
         {
+            this.userRepository = userRepository;
             this.playerRepository = playerRepository;
             this.transactionsRepository = transactionsRepository;
             this.drawRepository = drawRepository;
             this.ticketRepository = ticketRepository;
-            this.passwordHasher = passwordHasher;
+            this.emailSender = emailSender;
+            this.hasher = hasher;
             this.mapper = mapper;
             this.hashids = hashids;
         }
@@ -82,12 +87,32 @@ namespace Loto3000.Application.Services.Implementation
             }
 
             var player = mapper.Map<Player>(dto);
-            player.Password = passwordHasher.HashToString(dto.Password);
+            player.Password = hasher.HashToString(dto.Password);
             player.Role = SystemRoles.Player;
 
-            playerRepository.Create(player);
+            var created = playerRepository.Create(player);
 
+            var code = $"{hashids.Encode(created.Id)}{hashids.Encode(created.FirstName.Length)}";
+            created.SetVerificationCode(code);
+            playerRepository.Update(created);
+
+            emailSender.SendEmail(EmailContents.RegisterSubject, EmailContents.RegisterBody(created.FirstName, code), created.Email);
             return mapper.Map<PlayerDto>(dto);
+
+            #region DUMMY MAIL
+            // use mail - jane.murazik76@ethereal.email TO REGISTER, AND LOG IN on https://ethereal.email/ wtih
+            // emial - jane.murazik76@ethereal.email and password - emAuH87yXBcdTHY5Pb to get verification code
+            //OR COMMENT -> if(!user.IsVerified) condition in LoginService.cs to login without verification
+            #endregion
+        }
+        public void VerifyPlayer(string code)
+        {
+            var player = playerRepository.Query().Where(x => x.VerificationCode == code).FirstOrDefault() ?? throw new NotFoundException();
+
+            player.IsVerified = true;
+            player.ClearVerificationCode();
+
+            playerRepository.Update(player);
         }
         public void BuyCredits(BuyCreditsDto dto, int id)
         { //REGEX USED https://ihateregex.io/expr/credit-card/ 
@@ -150,64 +175,58 @@ namespace Loto3000.Application.Services.Implementation
         }
         public void ChangePassword(ChangePasswordDto dto, int id)
         {
+            var player = playerRepository.GetById(id) ?? throw new NotFoundException();
+
             if (dto.OldPassword == dto.Password)
             {
                 throw new ValidationException("Old password can not be the same as the new password");
             }
 
-            var player = playerRepository.GetById(id) ?? throw new NotFoundException();
-
-            if (player.Password != passwordHasher.HashToString(dto.OldPassword))
+            if(!hasher.Verify(dto.OldPassword, player.Password))
             {
                 throw new ValidationException("Old password is wrong");
+
             }
 
-            player.Password = passwordHasher.HashToString(dto.OldPassword);
+            player.Password = hasher.HashToString(dto.Password);
 
             playerRepository.Update(player);
         }
-        public void ForgotPassword(ForgotPasswordDto dto, string url)
+        public void ForgotPassword(ForgotPasswordDto dto)
         {
             var player = playerRepository.Query().FirstOrDefault(x => x.Email == dto.Email) ?? throw new NotFoundException();
 
-            var code = hashids.Encode(player.Id);
-
-            //emailsender TO DO
+            var code = hasher.HashToString(player.Username);
 
             player.SetForgotPasswordCode(code);
+            emailSender.SendEmail(EmailContents.ForgotPasswordSubject, EmailContents.ForgotPasswordBody(code), player.Email);
+
+            #region DUMMY MAIL
+            // use mail - jane.murazik76@ethereal.email TO REGISTER, AND LOG IN on https://ethereal.email/ wtih
+            // emial - jane.murazik76@ethereal.email and password - emAuH87yXBcdTHY5Pb to get recovery code
+            #endregion
 
             playerRepository.Update(player);
         }
+        public void UpdatePasswordByCode(UpdatePasswordDto dto)
+        {
+            var player = playerRepository.Query().Where(x => x.Username == dto.Username).FirstOrDefault() ?? throw new NotFoundException();
 
-        //public PlayerDto GetPlayerByCode(string code)
-        //{
-        //    var id = hashids.DecodeSingle(code);
+            if (!hasher.Verify(dto.Username, dto.Code)) 
+            {
+                throw new ValidationException();
+            }
 
-        //    var player = playerRepository.GetById(id) ?? throw new NotFoundException();
+            player.ClearForgotPasswordCode();
+            player.Password = hasher.HashToString(dto.Password);
 
-        //    return mapper.Map<PlayerDto>(player);
-        //}
-        //TO DO
-        //public void UpdatePasswordByCode(UpdatePasswordDto dto, string code)
-        //{
-        //    var id = hashids.DecodeSingle(code);
-        //    if (dto.Id != id)
-        //    {
-        //        throw new NotAllowedException();
-        //    }
-
-        //    var player = playerRepository.GetById(id) ?? throw new NotFoundException();
-
-        //    player.ClearForgotPasswordCode();
-        //    player.Password = passwordHasher.HashToString(dto.Password);
-
-        //    playerRepository.Update(player);
-        //}
+            playerRepository.Update(player);
+        }
         public void DeletePlayer(int id)
         {
-            var player = playerRepository.GetById(id) ?? throw new NotFoundException();
+            var player = userRepository.GetById(id) ?? throw new NotFoundException();
 
-            playerRepository.Delete(player);
+            userRepository.Delete(player);
         }
     }
 }

@@ -73,6 +73,7 @@ namespace Loto3000.Application.Services.Implementation
 
             admin.Password = passwordHasher.HashToString(dto.Password);
             admin.Role = SystemRoles.Administrator;
+            admin.IsVerified = true;
 
             adminRepository.Create(admin);
 

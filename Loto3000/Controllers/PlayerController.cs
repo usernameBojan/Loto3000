@@ -7,6 +7,7 @@ using System.Collections;
 using Microsoft.AspNetCore.Authorization;
 using Loto3000.Application.Utilities;
 using System.Security.Claims;
+using Loto3000.Application.Dto.PlayerAccountManagment;
 
 namespace Loto3000.Controllers
 {
@@ -25,7 +26,7 @@ namespace Loto3000.Controllers
         [HttpGet()]
         public ActionResult<PlayerDto> GetPlayer()
         {
-            var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             return Ok(service.GetPlayer(id));
         }
 
@@ -45,7 +46,7 @@ namespace Loto3000.Controllers
                 return BadRequest(ModelState);
             }
 
-            var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             service.BuyCredits(dto, id);
             return Ok("Deposit successful");
@@ -55,7 +56,7 @@ namespace Loto3000.Controllers
         [HttpGet("transactions/{transactionId:int}")]
         public ActionResult<IEnumerable> GetPlayerTransaction([FromRoute] int transactionId)
         {
-            var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             return Ok(service.GetPlayerTransaction(id, transactionId));
         }
@@ -64,7 +65,7 @@ namespace Loto3000.Controllers
         [HttpGet("transactions")]
         public ActionResult<IEnumerable> GetPlayerTransactions()
         {
-            var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             return Ok(service.GetPlayerTransactions(id));
         }
@@ -77,7 +78,7 @@ namespace Loto3000.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             var ticket = service.CreateTicket(dto, id);
             return Created($"api/v1/player/ticket/{ticket.Id}/", ticket);
@@ -87,7 +88,7 @@ namespace Loto3000.Controllers
         [HttpGet("/ticket/{ticketId:int}")]
         public ActionResult<IEnumerable> GetPlayerTicket([FromRoute] int ticketId)
         {
-            var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             return Ok(service.GetPlayerTicket(id, ticketId));
         }
@@ -96,9 +97,20 @@ namespace Loto3000.Controllers
         [HttpGet("tickets")]
         public ActionResult<IEnumerable<TicketDto>> GetPlayerTickets()
         {
-            var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             return Ok(service.GetPlayerTickets(id));
+        }
+
+        [Authorize(Policy = SystemPolicies.MustHaveId)]
+        [HttpPost("change-password")]
+        public ActionResult ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            service.ChangePassword(dto, id);
+
+            return Ok();
         }
 
         [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]

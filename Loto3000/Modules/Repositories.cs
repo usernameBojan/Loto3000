@@ -12,6 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddInfrastracture(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddScoped<IEmailSender, EmailSender>();
             services.AddScoped<IRepository<User>, BaseRepository<User>>();
             services.AddScoped<IRepository<Player>, BaseRepository<Player>>();
             services.AddScoped<IRepository<Admin>, BaseRepository<Admin>>();

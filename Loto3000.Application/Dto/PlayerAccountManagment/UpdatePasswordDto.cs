@@ -3,9 +3,7 @@
 namespace Loto3000.Application.Dto.PlayerAccountManagment
 {
     public class UpdatePasswordDto
-    {
-        public int Id { get; set; }
-
+    {        
         [Compare("ConfirmPassword")]
         [Required]
         [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")]
@@ -13,5 +11,11 @@ namespace Loto3000.Application.Dto.PlayerAccountManagment
 
         [Required]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        [Required]
+        public string Username { get; set; } = string.Empty;
+
+        [Required]
+        public string Code { get; set; } = string.Empty;
     }
 }
