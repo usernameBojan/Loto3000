@@ -12,9 +12,9 @@
         public DateTime SessionEnd { get; set; }
         public void DrawNums()
         {
-            List<DrawNumbers> drawNums = new List<DrawNumbers>();
+            List<DrawNumbers> drawNums = new();
 
-            Random random = new Random();
+            Random random = new();
             var winningNums = Enumerable.Range(1, 37)
                                         .OrderBy(x => random.Next())
                                         .Take(8)
@@ -24,7 +24,7 @@
 
             for (int i = 0; i < 8; i++)
             {
-                DrawNumbers drawNumbers = new DrawNumbers();
+                DrawNumbers drawNumbers = new();
 
                 drawNumbers.Number = winningNums[i];
 

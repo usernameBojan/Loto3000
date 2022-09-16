@@ -49,7 +49,7 @@ namespace Loto3000.Application.Services.Implementation
         {
             var player = playerRepository.Query()
                                          .Include(x => x.Tickets)
-                                         .Include(x => x.TransactionTracker)
+                                         .Include(x => x.Transactions)
                                          .Where(x => x.Id == id)
                                          .FirstOrDefault()
                          ?? throw new NotFoundException("Player not found");
@@ -60,7 +60,7 @@ namespace Loto3000.Application.Services.Implementation
         {
             var players = playerRepository.Query()
                                           .Include(x => x.Tickets)
-                                          .Include(x => x.TransactionTracker)
+                                          .Include(x => x.Transactions)
                                           .Select(p => mapper.Map<PlayerDto>(p));
 
             return players.ToList();
@@ -84,6 +84,11 @@ namespace Loto3000.Application.Services.Implementation
                 {
                     throw new ValidationException("This email is connected with another account.");
                 };
+            }
+
+            if(!IsPlayerLegalAge.VerifyAge(dto.DateOfBirth)) 
+            {
+                throw new NotAllowedException("Player must be older than 18 to register.");
             }
 
             var player = mapper.Map<Player>(dto);
@@ -123,7 +128,7 @@ namespace Loto3000.Application.Services.Implementation
             var transaction = mapper.Map<TransactionTracker>(dto);
             transaction.PlayerName = player.FullName;
 
-            player.TransactionTracker.Add(transaction);
+            player.Transactions.Add(transaction);
 
             playerRepository.Update(player);
         }

@@ -1,4 +1,6 @@
-﻿namespace Loto3000.Domain.Entities
+﻿using Loto3000.Domain.Exceptions;
+
+namespace Loto3000.Domain.Entities
 {
     public class Player : User
     {
@@ -6,12 +8,12 @@
         private const int MinimumDepositAmount = 5;
         private const int FirstTransactionPromoOffer = 2;
         private const int EachTenthTransactionPromoOffer = 100;
-        private bool IsTenthTransaction => (TransactionTracker.Count + 1) % 10 == 0;
+        private bool IsTenthTransaction => (Transactions.Count + 1) % 10 == 0;
         public Player() { }
         public string Email { get; set; } = string.Empty;
         public double Credits { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public IList<TransactionTracker> TransactionTracker { get; set; } = new List<TransactionTracker>();
+        public IList<TransactionTracker> Transactions { get; set; } = new List<TransactionTracker>();
         public IList<Ticket> Tickets { get; set; } = new List<Ticket>();
         public string? ForgotPasswordCode { get; private set; }
         public string? VerificationCode { get; private set; }
@@ -38,10 +40,10 @@
         {
             if (deposit < MinimumDepositAmount)
             {
-                throw new Exception("Deposited amount must be higher than 5$.");
+                throw new ValidationException("Deposited amount must be higher than 5$.");
             }
 
-            _ = TransactionTracker.Count == 0 ? Credits += credits * FirstTransactionPromoOffer : Credits += credits;
+            _ = Transactions.Count == 0 ? Credits += credits * FirstTransactionPromoOffer : Credits += credits;
 
             if (IsTenthTransaction)
             {
@@ -52,12 +54,12 @@
         {
             if (draw == null)
             {
-                throw new Exception("There is no active draw.");
+                throw new NotFoundException("There is no active draw.");
             }
 
             if (Credits < TicketPrice)
             {
-                throw new Exception("Not enough credits to buy ticket");
+                throw new ValidationException("Not enough credits to buy ticket");
             }
 
             var ticket = new Ticket(this, draw);

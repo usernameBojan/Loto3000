@@ -37,7 +37,7 @@ namespace Loto3000.Domain.Entities
 
             for (int i = 0; i < nums.Length; i++)
             {
-                Combination combination = new Combination();
+                Combination combination = new();
 
                 if (nums[i] < LowestNumberValue || nums[i] > HighestNumberValue)
                 {
@@ -52,27 +52,15 @@ namespace Loto3000.Domain.Entities
         }
         public void AssignPrize(int num)
         {
-            switch (num)
+            Prize = num switch
             {
-                case 7:
-                    Prize = Prizes.Car;
-                    break;
-                case 6:
-                    Prize = Prizes.Vacation;
-                    break;
-                case 5:
-                    Prize = Prizes.TV;
-                    break;
-                case 4:
-                    Prize = Prizes.GiftCard_100;
-                    break;
-                case 3:
-                    Prize = Prizes.GiftCard_50;
-                    break;
-                default:
-                    Prize = default;
-                    break;
-            }
+                7 => Prizes.Car,
+                6 => Prizes.Vacation,
+                5 => Prizes.TV,
+                4 => Prizes.GiftCard_100,
+                3 => Prizes.GiftCard_50,
+                _ => default,
+            };
         }
     }
 }

@@ -95,7 +95,7 @@ namespace Loto3000.Application.Services.Implementation
                                                             .Select(comb => comb.Number))
                                                         .ToList()
                                                         .Count;
-
+                
                 ticket.AssignPrize(ticket.NumbersGuessed);
             }
 
