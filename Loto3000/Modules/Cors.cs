@@ -2,7 +2,7 @@
 {
     public static class Cors
     {
-        private const string CorsPolicy = "CorsPolicy"; 
+        public const string CorsPolicy = "CorsPolicy"; 
         public static IServiceCollection AddCorsPolicy(this IServiceCollection services)
         {
             services.AddCors(opts =>

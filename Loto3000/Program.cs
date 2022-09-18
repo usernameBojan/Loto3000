@@ -23,6 +23,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(Cors.CorsPolicy);
+
 app.UseGlobalExceptionHandler();
 app.UseCustomLogger();
 
