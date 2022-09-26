@@ -31,9 +31,9 @@ namespace Loto3000.Application.Utilities
                                              expires: DateTime.Now.AddMinutes(45),
                                              signingCredentials: credentials);
 
-            TokenDto tokenDto = new TokenDto()
+            TokenDto tokenDto = new ()
             {
-                Token = new JwtSecurityTokenHandler().WriteToken(token)
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
             };
 
             return tokenDto;

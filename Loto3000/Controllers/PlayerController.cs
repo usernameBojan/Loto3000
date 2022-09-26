@@ -22,8 +22,8 @@ namespace Loto3000.Controllers
             this.service = service;
         }
 
-        [Authorize(Policy = SystemPolicies.MustHaveId)]
-        [HttpGet()]
+        [Authorize(Roles = SystemRoles.Player)]
+        [HttpGet]
         public ActionResult<PlayerDto> GetPlayer()
         {
             var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));

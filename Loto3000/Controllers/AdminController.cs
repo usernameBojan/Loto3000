@@ -4,6 +4,7 @@ using Loto3000.Application.Dto.Transactions;
 using Loto3000.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Loto3000.Application.Dto.Tickets;
 
 namespace Loto3000.Controllers
 {
@@ -13,14 +14,23 @@ namespace Loto3000.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IAdminService service;
-        public AdminController(IAdminService service)
+        private readonly IPlayerService playerService;
+        public AdminController(IAdminService service, IPlayerService playerService)
         {
             this.service = service;
+            this.playerService = playerService;
+        }
+
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
+        [HttpGet]
+        public ActionResult Administrate()
+        {
+            return Ok();
         }
 
         [Authorize(Roles = SystemRoles.SuperAdmin)]
         [HttpGet("{id:int}")]
-        public ActionResult<AdminDto> GetAdmin(int id)
+        public ActionResult<AdminDto> GetAdmin([FromRoute] int id)
         {
             return Ok(service.GetAdmin(id));
         }
@@ -33,6 +43,13 @@ namespace Loto3000.Controllers
         }
 
         [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
+        [HttpGet("player/{id:int}")]
+        public ActionResult<AdminDto> GetPlayerByAdmin([FromRoute] int id)
+        {
+            return Ok(playerService.GetPlayer(id));
+        }
+
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
         [HttpGet("show-transactions")]
         public ActionResult<IList<TransactionTrackerDto>> GetAllTransactions()
         {
@@ -41,7 +58,7 @@ namespace Loto3000.Controllers
 
         [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
         [HttpGet("show-tickets")]
-        public ActionResult<IList<TransactionTrackerDto>> GetAllTickets()
+        public ActionResult<IList<TicketDto>> GetAllTickets()
         {
             return Ok(service.GetAllTickets());
         }
