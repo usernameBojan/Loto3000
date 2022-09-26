@@ -230,6 +230,9 @@ namespace Loto3000.Application.Services.Implementation
         public void DeletePlayer(int id)
         {
             var player = userRepository.GetById(id) ?? throw new NotFoundException();
+            var email = playerRepository.Query().Where(x => x.Id == id).FirstOrDefault()?.Email ?? throw new NotFoundException();
+
+            emailSender.SendEmail(EmailContents.SuspendSubject, EmailContents.SuspendBody, email);
 
             userRepository.Delete(player);
         }
