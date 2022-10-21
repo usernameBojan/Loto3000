@@ -35,7 +35,7 @@ namespace Loto3000.Application.Mapper
 
                 x.CreateMap<BuyCreditsDto, TransactionTracker>();            
 
-                x.CreateMap<TransactionTracker, TransactionTrackerDto>();
+                x.CreateMap<TransactionTracker, TransactionTrackerDto>().ReverseMap();
 
                 x.CreateMap<CreateTicketDto, Ticket>();
 

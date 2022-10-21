@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class Repositories
+    internal static class Repositories
     {
-        public static IServiceCollection AddInfrastracture(this IServiceCollection services, IConfiguration configuration)
+        internal static IServiceCollection AddInfrastracture(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IEmailSender, EmailSender>();
@@ -22,6 +22,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IRepository<Combination>, BaseRepository<Combination>>();
             services.AddScoped<IRepository<DrawNumbers>, BaseRepository<DrawNumbers>>();
             services.AddScoped<IRepository<TransactionTracker>, BaseRepository<TransactionTracker>>();
+            services.AddScoped<IRepository<NonregisteredPlayer>, BaseRepository<NonregisteredPlayer>>();
+            services.AddScoped<IRepository<NonregisteredPlayerTicket>, BaseRepository<NonregisteredPlayerTicket>>();
+            services.AddScoped<IRepository<NonregisteredPlayerTransaction>, BaseRepository<NonregisteredPlayerTransaction>>();
 
             services.AddDbContext<ApplicationDbContext>(opts => opts.UseSqlServer(configuration.GetConnectionString("DefaultConnectionString")));
             

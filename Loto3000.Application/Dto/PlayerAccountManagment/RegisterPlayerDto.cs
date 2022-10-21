@@ -21,7 +21,9 @@ namespace Loto3000.Application.Dto.PlayerAccountManagment
         public string ConfirmPassword { get; set; } = string.Empty;
         [Required]
         [EmailAddress]
-        public string Email { get; set; } = string.Empty;   
+        public string Email { get; set; } = string.Empty;
+
+        [Required]
         public DateTime DateOfBirth { get; set; }
     }
 }

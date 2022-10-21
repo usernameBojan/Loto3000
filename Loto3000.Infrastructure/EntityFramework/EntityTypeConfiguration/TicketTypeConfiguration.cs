@@ -4,8 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Loto3000.Infrastructure.EntityFramework.EntityTypeConfiguration
 {
-    internal class TicketTypeConfiguration
-        : IEntityTypeConfiguration<Ticket>
+    public class TicketTypeConfiguration : IEntityTypeConfiguration<Ticket>
     {
         public void Configure(EntityTypeBuilder<Ticket> builder)
         {

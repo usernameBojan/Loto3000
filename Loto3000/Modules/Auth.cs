@@ -6,13 +6,13 @@ using System.Text;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class Auth
+    internal static class Auth
     {
-        public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
+        internal static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opts =>
             {
-                opts.TokenValidationParameters = new TokenValidationParameters
+                opts.TokenValidationParameters = new()
                 {
                     ValidateAudience = true,
                     ValidateIssuer = true,
@@ -26,8 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services;
         }
-
-        public static IServiceCollection AddPolicies(this IServiceCollection services)
+        internal static IServiceCollection AddPolicies(this IServiceCollection services)
         {
             services.AddAuthorization(opts =>
                 {

@@ -4,8 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Loto3000.Infrastructure.EntityFramework.EntityTypeConfiguration
 {
-    public class PlayerTypeConfiguration
-        : IEntityTypeConfiguration<Player>
+    public class PlayerTypeConfiguration : IEntityTypeConfiguration<Player>
     {
         public void Configure(EntityTypeBuilder<Player> builder)
         {

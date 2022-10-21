@@ -4,9 +4,9 @@ using Loto3000.Application.Mapper;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class Configuration
+    internal static class Configuration
     {
-        public static IServiceCollection AddConfiguration(this IServiceCollection services)
+        internal static IServiceCollection AddConfiguration(this IServiceCollection services)
         {
             services.AddSingleton(sp => ModelMapper.GetConfiguration());
             services.AddScoped(sp => sp.GetRequiredService<MapperConfiguration>().CreateMapper());

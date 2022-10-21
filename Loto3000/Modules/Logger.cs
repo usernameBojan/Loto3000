@@ -2,9 +2,9 @@
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class Logger
+    internal static class Logger
     {
-        public static IServiceCollection AddLogger(this IServiceCollection services, IConfiguration configuration)
+        internal static IServiceCollection AddLogger(this IServiceCollection services, IConfiguration configuration)
         {
             Log.Logger = new LoggerConfiguration()
                                          .ReadFrom

@@ -8,7 +8,6 @@ namespace Loto3000.Application.Services
     public interface IDrawService
     {
         DrawDto GetDraw(int id);
-        DrawDto? GetActiveDraw();
         IEnumerable<DrawDto> GetDraws();
         DrawDto ActivateDrawSession();
         DrawDto InitiateDraw();

@@ -11,12 +11,6 @@ namespace Loto3000.Application.Services
         IEnumerable<PlayerDto> GetPlayers();
         PlayerDto RegisterPlayer(RegisterPlayerDto dto);
         void VerifyPlayer(string code);
-        void BuyCredits(BuyCreditsDto dto, int id);
-        TicketDto CreateTicket(CreateTicketDto dto, int id);
-        TransactionTrackerDto GetPlayerTransaction(int id, int transactionId);
-        IEnumerable<TransactionTrackerDto> GetPlayerTransactions(int id); 
-        IEnumerable<TicketDto> GetPlayerTickets(int id);
-        TicketDto GetPlayerTicket(int id, int ticketId);
         void ChangePassword(ChangePasswordDto dto, int id);
         void ForgotPassword(ForgotPasswordDto dto);
         void UpdatePasswordByCode(UpdatePasswordDto dto);

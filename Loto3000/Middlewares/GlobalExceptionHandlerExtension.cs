@@ -2,9 +2,9 @@
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class GlobalExceptionHandlerExtension
+    internal static class GlobalExceptionHandlerExtension
     {
-        public static IApplicationBuilder UseGlobalExceptionHandler(this IApplicationBuilder app)
+        internal static IApplicationBuilder UseGlobalExceptionHandler(this IApplicationBuilder app)
         {
             app.UseMiddleware<GlobalExceptionHandler>();
             return app;

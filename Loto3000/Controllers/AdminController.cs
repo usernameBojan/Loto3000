@@ -15,17 +15,14 @@ namespace Loto3000.Controllers
     {
         private readonly IAdminService service;
         private readonly IPlayerService playerService;
-        public AdminController(IAdminService service, IPlayerService playerService)
+        private readonly ITicketService ticketService;
+        private readonly ITransactionService transactionService;
+        public AdminController(IAdminService service, IPlayerService playerService, ITicketService ticketService, ITransactionService transactionService)
         {
             this.service = service;
             this.playerService = playerService;
-        }
-
-        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
-        [HttpGet]
-        public ActionResult Administrate()
-        {
-            return Ok();
+            this.ticketService = ticketService;
+            this.transactionService = transactionService;
         }
 
         [Authorize(Roles = SystemRoles.SuperAdmin)]
@@ -53,14 +50,48 @@ namespace Loto3000.Controllers
         [HttpGet("show-transactions")]
         public ActionResult<IList<TransactionTrackerDto>> GetAllTransactions()
         {
-            return Ok(service.GetAllTransactions());
+            return Ok(transactionService.GetAllTransactions());
+        }
+
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
+        [HttpGet("nonregistered-transactions")]
+        public ActionResult<IList<TransactionTrackerDto>> GetNonregisteredPlayersTransactions()
+        {
+            return Ok(transactionService.GetNonregisteredPlayersTransactions());
+        }
+
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
+        [HttpGet("nonregistered-transactions/{transactionId:int}")]
+        public ActionResult<IList<TransactionTrackerDto>> GetNonregisteredPlayerTransaction([FromRoute] int transactionId)
+        {
+            return Ok(transactionService.GetNonregisteredPlayerTransaction(transactionId));
         }
 
         [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
         [HttpGet("show-tickets")]
         public ActionResult<IList<TicketDto>> GetAllTickets()
         {
-            return Ok(service.GetAllTickets());
+            return Ok(ticketService.GetAllTickets());
+        }
+
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
+        [HttpGet("registered-tickets")]
+        public ActionResult<IList<TicketDto>> GetRegisteredPlayersTickets()
+        {
+            return Ok(ticketService.GetRegisteredPlayersTickets());
+        }
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
+        [HttpGet("nonregistered-tickets")] 
+        public ActionResult<IList<TransactionTrackerDto>> GetNonregisteredPlayersTickets()
+        {
+            return Ok(ticketService.GetNonregisteredPlayersTickets());
+        }
+
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
+        [HttpGet("nonregistered-tickets/{ticketId:int}")]
+        public ActionResult<IList<TransactionTrackerDto>> GetNonregisteredPlayerTickets([FromRoute] int ticketId)
+        {
+            return Ok(ticketService.GetNonregisteredPlayerTicket(ticketId));
         }
 
         [Authorize(Roles = SystemRoles.SuperAdmin)]

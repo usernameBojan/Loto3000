@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Loto3000.Infrastructure.EntityFramework.EntityTypeConfiguration
 {
-    public class DrawTypeConfiguration
-        : IEntityTypeConfiguration<Draw>
+    public class DrawTypeConfiguration : IEntityTypeConfiguration<Draw>
     {
+
         public void Configure(EntityTypeBuilder<Draw> builder)
         {
             builder.Property(p => p.DrawNumbersString)
@@ -24,6 +24,8 @@ namespace Loto3000.Infrastructure.EntityFramework.EntityTypeConfiguration
             builder.Property(p => p.SessionEnd)
             .HasMaxLength(64)
             .IsRequired();
+
+            builder.HasData(Draw.SetFirstSession());
         }
     }
 }

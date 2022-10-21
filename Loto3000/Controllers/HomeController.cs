@@ -1,6 +1,7 @@
 ﻿using Loto3000.Application.Dto.Login;
 using Loto3000.Application.Dto.Player;
 using Loto3000.Application.Dto.PlayerAccountManagment;
+using Loto3000.Application.Dto.Tickets;
 using Loto3000.Application.Dto.Winners;
 using Loto3000.Application.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,13 @@ namespace Loto3000.Controllers
         private readonly IPlayerService playerService;
         private readonly ILoginService loginService;
         private readonly IDrawService drawService;
-        public HomeController(IPlayerService playerService, IDrawService drawService, ILoginService loginService)
+        private readonly ITicketService ticketService;
+        public HomeController(IPlayerService playerService, IDrawService drawService, ILoginService loginService, ITicketService ticketService)
         {
             this.playerService = playerService;
             this.loginService = loginService;
             this.drawService = drawService;
+            this.ticketService = ticketService;
         }
 
         [HttpPost("register")]
@@ -30,8 +33,8 @@ namespace Loto3000.Controllers
                 return BadRequest(ModelState);
             }
 
-            playerService.RegisterPlayer(dto);
-            return Created($"api/v1/home/login/", dto);
+            var player = playerService.RegisterPlayer(dto);
+            return Created($"api/v1/home/login/", player);
         }
 
         [HttpPost("register/verify")]
@@ -56,12 +59,20 @@ namespace Loto3000.Controllers
             return Ok();
         }
 
+        [HttpPost("create-ticket-nonregistered")]
+        public ActionResult CreateTicketUnregistered([FromBody] CreateTicketNonregisteredPlayerDto dto)
+        {
+            var ticket = ticketService.CreateTicketNonregisteredPlayer(dto);
+            return Ok(ticket);
+        }
+
         [HttpPost("change-password-with-email-code")]
         public ActionResult ChangePasswordByCode([FromBody] UpdatePasswordDto dto)
         {
             playerService.UpdatePasswordByCode(dto);
             return Ok();
         }
+
         [HttpGet("winners-board")]
         public ActionResult<IEnumerable<WinnersDto>> WinnersBoard()
         {

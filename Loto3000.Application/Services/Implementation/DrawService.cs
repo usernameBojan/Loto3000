@@ -13,35 +13,29 @@ namespace Loto3000.Application.Services.Implementation
     {
         private readonly IRepository<Draw> drawRepository;
         private readonly IRepository<DrawNumbers> drawNumbersRepository;
-        private readonly IRepository<Player> playerRepository;
         private readonly IRepository<Ticket> ticketRepository;
         private readonly IRepository<Combination> combinationRepository;
+        private readonly IRepository<NonregisteredPlayerTicket> nonregisteredPlayerTicketsRepository;
         private readonly IMapper mapper;
         public DrawService(
-            IRepository<Draw> drawRepository, 
-            IRepository<DrawNumbers> drawNumbersRepository, 
-            IRepository<Ticket> ticketRepository, 
-            IRepository<Combination> combinationRepository, 
-            IRepository<Player> playerRepository,
+            IRepository<Draw> drawRepository,
+            IRepository<DrawNumbers> drawNumbersRepository,
+            IRepository<Ticket> ticketRepository,
+            IRepository<Combination> combinationRepository,
+            IRepository<NonregisteredPlayerTicket> nonregisteredPlayerTicketsRepository,
             IMapper mapper
             )
         {
             this.drawRepository = drawRepository;
             this.drawNumbersRepository = drawNumbersRepository;
-            this.playerRepository = playerRepository;
             this.ticketRepository = ticketRepository;
             this.combinationRepository = combinationRepository;
+            this.nonregisteredPlayerTicketsRepository = nonregisteredPlayerTicketsRepository;
             this.mapper = mapper;
         }
         public DrawDto GetDraw(int id)
         {
             var draw = drawRepository.GetById(id) ?? throw new NotFoundException();   
-
-            return mapper.Map<DrawDto>(draw);
-        }
-        public DrawDto? GetActiveDraw()
-        {
-            var draw = drawRepository.Query().WhereActiveDraw().FirstOrDefault();
 
             return mapper.Map<DrawDto>(draw);
         }
@@ -60,10 +54,6 @@ namespace Loto3000.Application.Services.Implementation
 
             return mapper.Map<DrawDto>(draw);
         }
-        //GUIDELINES FOR TESTING
-        //MAKE SURE THERE ARE NO DRAWS IN THE DATABASE
-        //COMMENT THE FIRST IF STATEMENT IN InitiateDraw() WHICH CHECKS IF DRAW DATE IS EQUAL TO TODAYS DATE
-        //GO TO Draw.cs AND FOLLOW THE COMMENTS FOR GUIDELINES THERE
         public DrawDto InitiateDraw()
         {
             var draw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new NotFoundException("No draws yet.");
@@ -82,7 +72,7 @@ namespace Loto3000.Application.Services.Implementation
 
             var validTickets = ticketRepository.Query()
                                                .Include(x => x.Draw)
-                                               .Where(x => x.Draw.Id == draw.Id)
+                                               .Where(x => x.Draw!.Id == draw.Id)
                                                .ToList();
 
             var combinations = combinationRepository.Query();
@@ -97,11 +87,7 @@ namespace Loto3000.Application.Services.Implementation
                                                         .Count;
                 
                 ticket.AssignPrize(ticket.NumbersGuessed);
-            }
-
-            foreach(var ticket in validTickets)
-            {
-                ticketRepository.Update(ticket);    
+                ticketRepository.Update(ticket);
             }
 
             drawRepository.Update(draw);
@@ -119,22 +105,32 @@ namespace Loto3000.Application.Services.Implementation
 
             var draw = drawRepository.Query().WhereConcludedDraw().FirstOrDefault() ?? throw new NotFoundException();
 
-            var eligibleTickets = ticketRepository.Query()
-                                                  .Include(x => x.Player)
-                                                  .Include(x => x.Draw)
-                                                  .Where(x => x.Draw.Id == draw.Id)
-                                                  .ToList();
+            var registeredPlayersTickets = ticketRepository.Query()
+                                                           .Include(x => x.Player)
+                                                           .Include(x => x.Draw)
+                                                           .Where(x => x.Draw!.Id == draw.Id);
 
-            foreach(var ticket in eligibleTickets)
+            var nonregisteredPlayersTickets = nonregisteredPlayerTicketsRepository.Query()
+                                                                                  .Include(x => x.NonregisteredPlayer)
+                                                                                  .Include(x => x.Draw)
+                                                                                  .Where(x => x.Draw!.Id == draw.Id);
+
+            foreach(var ticket in registeredPlayersTickets)
             {
-                if(((int)ticket.Prize) >= LowestPrizeValue)
+                if (((int)ticket.Prize) >= LowestPrizeValue)
                 {
-                    var winner = new WinnersDto();
+                    WinnersDto winner = new(ticket.Player!.FullName, ticket.CombinationNumbersString, ticket.Prize);
 
-                    winner.PlayerName = ticket.Player.FullName;
-                    winner.CombinationNumbersString = ticket.CombinationNumbersString;
-                    winner.Prize = ticket.Prize;
-                    
+                    winners.Add(winner);
+                }
+            }
+
+            foreach (var ticket in nonregisteredPlayersTickets)
+            {
+                if (((int)ticket.Prize) >= LowestPrizeValue)
+                {
+                    WinnersDto winner = new(ticket.NonregisteredPlayer!.FullName, ticket.CombinationNumbersString, ticket.Prize);
+
                     winners.Add(winner);
                 }
             }

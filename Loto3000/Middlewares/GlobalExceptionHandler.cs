@@ -5,7 +5,6 @@ namespace Loto3000.Middlewares
     public class GlobalExceptionHandler
     {
         private readonly RequestDelegate next;
-
         public GlobalExceptionHandler(RequestDelegate next)
         {
             this.next = next;

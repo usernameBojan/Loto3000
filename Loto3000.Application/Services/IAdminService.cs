@@ -8,8 +8,6 @@ namespace Loto3000.Application.Services
     {
         AdminDto GetAdmin(int id);
         IEnumerable<AdminDto> GetAdmins();
-        IEnumerable<TransactionTrackerDto> GetAllTransactions();
-        public IEnumerable<TicketDto> GetAllTickets();
         AdminDto CreateAdmin(CreateAdminDto model);
         void DeleteAdmin(int id);
     }

@@ -4,7 +4,6 @@ using Loto3000.Application.Dto.Transactions;
 using Loto3000.Application.Repositories;
 using Loto3000.Application.Utilities;
 using Loto3000.Domain.Entities;
-using Loto3000.Application.Dto.Tickets;
 using Loto3000.Domain.Exceptions;
 
 namespace Loto3000.Application.Services.Implementation
@@ -13,23 +12,12 @@ namespace Loto3000.Application.Services.Implementation
     {
         private readonly IRepository<User> userRepository;
         private readonly IRepository<Admin> adminRepository;
-        private readonly IRepository<TransactionTracker> transactionsRepository;
-        private readonly IRepository<Ticket> ticketRepository;
         private readonly IPasswordHasher passwordHasher;
         private readonly IMapper mapper;
-        public AdminService(
-            IRepository<User> userRepository,
-            IRepository<Admin> adminRepository,
-            IRepository<TransactionTracker> transactionsRepository,
-            IRepository<Ticket> ticketRepository,
-            IPasswordHasher passwordHasher,
-            IMapper mapper
-)
+        public AdminService(IRepository<User> userRepository, IRepository<Admin> adminRepository, IPasswordHasher passwordHasher, IMapper mapper)
         {
             this.adminRepository = adminRepository;
             this.userRepository = userRepository;
-            this.transactionsRepository = transactionsRepository;
-            this.ticketRepository = ticketRepository;
             this.passwordHasher = passwordHasher;
             this.mapper = mapper;
         }
@@ -45,30 +33,13 @@ namespace Loto3000.Application.Services.Implementation
 
             return admins.ToList();
         }
-        public IEnumerable<TransactionTrackerDto> GetAllTransactions()
-        {
-            var transactions = transactionsRepository.Query().Select(t => mapper.Map<TransactionTrackerDto>(t));
-            
-            return transactions.ToList();
-        }
-        public IEnumerable<TicketDto> GetAllTickets()
-        {
-            var tickets = ticketRepository.Query().Select(t => mapper.Map<TicketDto>(t));
-
-            return tickets.ToList();
-        }
         public AdminDto CreateAdmin(CreateAdminDto dto)
         {
             var admin = mapper.Map<Admin>(dto);
 
-            var users = userRepository.Query();
-
-            foreach(var user in users)
+            if(userRepository.Query().Any(x => x.Username == dto.Username))
             {
-                if(user.Username == dto.Username)
-                {
-                    throw new ValidationException("Username already exists");
-                }
+                throw new ValidationException("Username already exists");
             }
 
             admin.Password = passwordHasher.HashToString(dto.Password);
@@ -84,6 +55,10 @@ namespace Loto3000.Application.Services.Implementation
             var admin = adminRepository.GetById(id) ?? throw new NotFoundException();
 
             adminRepository.Delete(admin);
+        }
+        public IEnumerable<TransactionTrackerDto> GetAllTransactions()
+        {
+            throw new NotImplementedException();
         }
     }
 }

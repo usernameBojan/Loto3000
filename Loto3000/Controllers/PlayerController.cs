@@ -16,10 +16,14 @@ namespace Loto3000.Controllers
     [ApiController]
     public class PlayerController : ControllerBase
     {
-        private readonly IPlayerService service;
-        public PlayerController(IPlayerService service)
+        private readonly IPlayerService playerService;
+        private readonly ITicketService ticketService;
+        private readonly ITransactionService transactionService;
+        public PlayerController(IPlayerService playerService, ITicketService ticketService, ITransactionService transactionService)
         {
-            this.service = service;
+            this.playerService = playerService;
+            this.ticketService = ticketService;
+            this.transactionService = transactionService;
         }
 
         [Authorize(Roles = SystemRoles.Player)]
@@ -27,14 +31,14 @@ namespace Loto3000.Controllers
         public ActionResult<PlayerDto> GetPlayer()
         {
             var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            return Ok(service.GetPlayer(id));
+            return Ok(playerService.GetPlayer(id));
         }
 
         [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
         [HttpGet("players")]
         public ActionResult<IEnumerable<PlayerDto>> GetPlayers()
         {
-            return Ok(service.GetPlayers());
+            return Ok(playerService.GetPlayers());
         }
 
         [Authorize(Roles = SystemRoles.Player)]
@@ -48,7 +52,7 @@ namespace Loto3000.Controllers
 
             var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            service.BuyCredits(dto, id);
+            transactionService.BuyCredits(dto, id);
             return Ok("Deposit successful");
         }
 
@@ -58,7 +62,7 @@ namespace Loto3000.Controllers
         {
             var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            return Ok(service.GetPlayerTransaction(id, transactionId));
+            return Ok(transactionService.GetPlayerTransaction(id, transactionId));
         }
 
         [Authorize(Policy = SystemPolicies.MustHaveId)]
@@ -67,7 +71,7 @@ namespace Loto3000.Controllers
         {
             var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            return Ok(service.GetPlayerTransactions(id));
+            return Ok(transactionService.GetPlayerTransactions(id));
         }
 
         [Authorize(Roles = SystemRoles.Player)]
@@ -80,7 +84,7 @@ namespace Loto3000.Controllers
             }
             var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            var ticket = service.CreateTicket(dto, id);
+            var ticket = ticketService.CreateTicket(dto, id);
             return Created($"api/v1/player/ticket/{ticket.Id}/", ticket);
         }
 
@@ -90,7 +94,7 @@ namespace Loto3000.Controllers
         {
             var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            return Ok(service.GetPlayerTicket(id, ticketId));
+            return Ok(ticketService.GetPlayerTicket(id, ticketId));
         }
 
         [Authorize(Policy = SystemPolicies.MustHaveId)]
@@ -99,7 +103,7 @@ namespace Loto3000.Controllers
         {
             var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            return Ok(service.GetPlayerTickets(id));
+            return Ok(ticketService.GetPlayerTickets(id));
         }
 
         [Authorize(Policy = SystemPolicies.MustHaveId)]
@@ -108,7 +112,7 @@ namespace Loto3000.Controllers
         {
             var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            service.ChangePassword(dto, id);
+            playerService.ChangePassword(dto, id);
 
             return Ok();
         }
@@ -117,7 +121,7 @@ namespace Loto3000.Controllers
         [HttpDelete("{id:int}")]
         public ActionResult DeletePlayer(int id)
         {
-            service.DeletePlayer(id);
+            playerService.DeletePlayer(id);
             return Ok();
         }
     }

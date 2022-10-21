@@ -71,6 +71,16 @@ namespace Loto3000.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Draws");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DrawNumbersString = "",
+                            DrawTime = new DateTime(2022, 10, 31, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            SessionEnd = new DateTime(2022, 10, 31, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            SessionStart = new DateTime(2022, 10, 22, 20, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Loto3000.Domain.Entities.DrawNumbers", b =>
@@ -92,6 +102,30 @@ namespace Loto3000.Infrastructure.Migrations
                     b.HasIndex("DrawId");
 
                     b.ToTable("DrawNumbers");
+                });
+
+            modelBuilder.Entity("Loto3000.Domain.Entities.NonregisteredPlayer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DepositAmount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NonregisteredPlayer");
                 });
 
             modelBuilder.Entity("Loto3000.Domain.Entities.SuperAdmin", b =>
@@ -141,6 +175,10 @@ namespace Loto3000.Infrastructure.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("DrawId")
                         .HasColumnType("int");
 
@@ -148,7 +186,7 @@ namespace Loto3000.Infrastructure.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("int");
 
-                    b.Property<int>("PlayerId")
+                    b.Property<int?>("PlayerId")
                         .HasColumnType("int");
 
                     b.Property<int>("Prize")
@@ -165,6 +203,8 @@ namespace Loto3000.Infrastructure.Migrations
                     b.HasIndex("PlayerId");
 
                     b.ToTable("Tickets");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Ticket");
                 });
 
             modelBuilder.Entity("Loto3000.Domain.Entities.TransactionTracker", b =>
@@ -178,7 +218,11 @@ namespace Loto3000.Infrastructure.Migrations
                     b.Property<double>("DepositAmount")
                         .HasColumnType("float");
 
-                    b.Property<int>("PlayerId")
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PlayerId")
                         .HasColumnType("int");
 
                     b.Property<string>("PlayerName")
@@ -193,6 +237,8 @@ namespace Loto3000.Infrastructure.Migrations
                     b.HasIndex("PlayerId");
 
                     b.ToTable("Transactions");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("TransactionTracker");
                 });
 
             modelBuilder.Entity("Loto3000.Domain.Entities.User", b =>
@@ -241,6 +287,34 @@ namespace Loto3000.Infrastructure.Migrations
                     b.HasBaseType("Loto3000.Domain.Entities.User");
 
                     b.ToTable("Admins", (string)null);
+                });
+
+            modelBuilder.Entity("Loto3000.Domain.Entities.NonregisteredPlayerTicket", b =>
+                {
+                    b.HasBaseType("Loto3000.Domain.Entities.Ticket");
+
+                    b.Property<int?>("NonregisteredPlayerId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("NonregisteredPlayerId")
+                        .IsUnique()
+                        .HasFilter("[NonregisteredPlayerId] IS NOT NULL");
+
+                    b.HasDiscriminator().HasValue("NonregisteredPlayerTicket");
+                });
+
+            modelBuilder.Entity("Loto3000.Domain.Entities.NonregisteredPlayerTransaction", b =>
+                {
+                    b.HasBaseType("Loto3000.Domain.Entities.TransactionTracker");
+
+                    b.Property<int?>("NonregisteredPlayerId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("NonregisteredPlayerId")
+                        .IsUnique()
+                        .HasFilter("[NonregisteredPlayerId] IS NOT NULL");
+
+                    b.HasDiscriminator().HasValue("NonregisteredPlayerTransaction");
                 });
 
             modelBuilder.Entity("Loto3000.Domain.Entities.Player", b =>
@@ -296,9 +370,7 @@ namespace Loto3000.Infrastructure.Migrations
 
                     b.HasOne("Loto3000.Domain.Entities.Player", "Player")
                         .WithMany("Tickets")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PlayerId");
 
                     b.Navigation("Draw");
 
@@ -308,10 +380,8 @@ namespace Loto3000.Infrastructure.Migrations
             modelBuilder.Entity("Loto3000.Domain.Entities.TransactionTracker", b =>
                 {
                     b.HasOne("Loto3000.Domain.Entities.Player", "Player")
-                        .WithMany("TransactionTracker")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Transactions")
+                        .HasForeignKey("PlayerId");
 
                     b.Navigation("Player");
                 });
@@ -323,6 +393,24 @@ namespace Loto3000.Infrastructure.Migrations
                         .HasForeignKey("Loto3000.Domain.Entities.Admin", "Id")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Loto3000.Domain.Entities.NonregisteredPlayerTicket", b =>
+                {
+                    b.HasOne("Loto3000.Domain.Entities.NonregisteredPlayer", "NonregisteredPlayer")
+                        .WithOne("Ticket")
+                        .HasForeignKey("Loto3000.Domain.Entities.NonregisteredPlayerTicket", "NonregisteredPlayerId");
+
+                    b.Navigation("NonregisteredPlayer");
+                });
+
+            modelBuilder.Entity("Loto3000.Domain.Entities.NonregisteredPlayerTransaction", b =>
+                {
+                    b.HasOne("Loto3000.Domain.Entities.NonregisteredPlayer", "NonregisteredPlayer")
+                        .WithOne("Transaction")
+                        .HasForeignKey("Loto3000.Domain.Entities.NonregisteredPlayerTransaction", "NonregisteredPlayerId");
+
+                    b.Navigation("NonregisteredPlayer");
                 });
 
             modelBuilder.Entity("Loto3000.Domain.Entities.Player", b =>
@@ -341,6 +429,13 @@ namespace Loto3000.Infrastructure.Migrations
                     b.Navigation("Tickets");
                 });
 
+            modelBuilder.Entity("Loto3000.Domain.Entities.NonregisteredPlayer", b =>
+                {
+                    b.Navigation("Ticket");
+
+                    b.Navigation("Transaction");
+                });
+
             modelBuilder.Entity("Loto3000.Domain.Entities.Ticket", b =>
                 {
                     b.Navigation("CombinationNumbers");
@@ -350,7 +445,7 @@ namespace Loto3000.Infrastructure.Migrations
                 {
                     b.Navigation("Tickets");
 
-                    b.Navigation("TransactionTracker");
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

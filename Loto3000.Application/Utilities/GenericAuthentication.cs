@@ -8,9 +8,9 @@ using System.Text;
 
 namespace Loto3000.Application.Utilities
 {
-    public static class GenericAuthentication<T> where T : IEntity
+    internal static class GenericAuthentication<T> where T : IEntity
     {
-        public static TokenDto Authenticate(int id, string name, string surname, string role, IConfiguration configuration)
+        internal static TokenDto Authenticate(int id, string name, string surname, string role, IConfiguration configuration)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
             var algorithm = SecurityAlgorithms.HmacSha256;

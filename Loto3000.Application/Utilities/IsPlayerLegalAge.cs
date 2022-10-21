@@ -1,8 +1,8 @@
 ﻿namespace Loto3000.Application.Utilities
 {
-    public static class IsPlayerLegalAge
+    internal static class IsPlayerLegalAge
     {
-        public static bool VerifyAge(DateTime dateOfBirth)
+        internal static bool VerifyAge(DateTime dateOfBirth)
         {
             int age = 0;
 

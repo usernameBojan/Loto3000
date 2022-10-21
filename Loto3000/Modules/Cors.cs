@@ -1,9 +1,9 @@
 ﻿namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class Cors
+    internal static class Cors
     {
-        public const string CorsPolicy = "CorsPolicy"; 
-        public static IServiceCollection AddCorsPolicy(this IServiceCollection services)
+        internal const string CorsPolicy = "CorsPolicy";
+        internal static IServiceCollection AddCorsPolicy(this IServiceCollection services)
         {
             services.AddCors(opts =>
             {

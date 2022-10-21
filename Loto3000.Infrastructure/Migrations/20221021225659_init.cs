@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Loto3000.Infrastructure.Migrations
 {
-    public partial class SET_NEW_DB_better_approach : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,6 +23,21 @@ namespace Loto3000.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Draws", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NonregisteredPlayer",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DepositAmount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NonregisteredPlayer", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -50,7 +65,8 @@ namespace Loto3000.Infrastructure.Migrations
                     LastName = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Username = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Role = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    Role = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    IsVerified = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -101,6 +117,7 @@ namespace Loto3000.Infrastructure.Migrations
                     Credits = table.Column<double>(type: "float", maxLength: 50, nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", maxLength: 256, nullable: false),
                     ForgotPasswordCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ForgotPasswordCodeCreated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
@@ -122,9 +139,11 @@ namespace Loto3000.Infrastructure.Migrations
                     NumbersGuessed = table.Column<int>(type: "int", maxLength: 10, nullable: false),
                     CombinationNumbersString = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     TicketCreatedTime = table.Column<DateTime>(type: "datetime2", maxLength: 256, nullable: false),
-                    PlayerId = table.Column<int>(type: "int", nullable: false),
+                    PlayerId = table.Column<int>(type: "int", nullable: true),
                     DrawId = table.Column<int>(type: "int", nullable: true),
-                    Prize = table.Column<int>(type: "int", nullable: false)
+                    Prize = table.Column<int>(type: "int", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NonregisteredPlayerId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -135,11 +154,15 @@ namespace Loto3000.Infrastructure.Migrations
                         principalTable: "Draws",
                         principalColumn: "Id");
                     table.ForeignKey(
+                        name: "FK_Tickets_NonregisteredPlayer_NonregisteredPlayerId",
+                        column: x => x.NonregisteredPlayerId,
+                        principalTable: "NonregisteredPlayer",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Tickets_Players_PlayerId",
                         column: x => x.PlayerId,
                         principalTable: "Players",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -151,17 +174,23 @@ namespace Loto3000.Infrastructure.Migrations
                     PlayerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DepositAmount = table.Column<double>(type: "float", nullable: false),
                     TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PlayerId = table.Column<int>(type: "int", nullable: false)
+                    PlayerId = table.Column<int>(type: "int", nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NonregisteredPlayerId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Transactions", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Transactions_NonregisteredPlayer_NonregisteredPlayerId",
+                        column: x => x.NonregisteredPlayerId,
+                        principalTable: "NonregisteredPlayer",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Transactions_Players_PlayerId",
                         column: x => x.PlayerId,
                         principalTable: "Players",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -185,6 +214,11 @@ namespace Loto3000.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Draws",
+                columns: new[] { "Id", "DrawNumbersString", "DrawTime", "SessionEnd", "SessionStart" },
+                values: new object[] { 1, "", new DateTime(2022, 10, 31, 20, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2022, 10, 31, 20, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2022, 10, 22, 20, 0, 0, 0, DateTimeKind.Unspecified) });
+
+            migrationBuilder.InsertData(
                 table: "SuperAdmin",
                 columns: new[] { "Id", "Password", "Role", "Username" },
                 values: new object[] { 1, "123456789101112", "SuperAdmin", "SystemAdministrator" });
@@ -205,9 +239,23 @@ namespace Loto3000.Infrastructure.Migrations
                 column: "DrawId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tickets_NonregisteredPlayerId",
+                table: "Tickets",
+                column: "NonregisteredPlayerId",
+                unique: true,
+                filter: "[NonregisteredPlayerId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tickets_PlayerId",
                 table: "Tickets",
                 column: "PlayerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_NonregisteredPlayerId",
+                table: "Transactions",
+                column: "NonregisteredPlayerId",
+                unique: true,
+                filter: "[NonregisteredPlayerId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_PlayerId",
@@ -237,6 +285,9 @@ namespace Loto3000.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Draws");
+
+            migrationBuilder.DropTable(
+                name: "NonregisteredPlayer");
 
             migrationBuilder.DropTable(
                 name: "Players");

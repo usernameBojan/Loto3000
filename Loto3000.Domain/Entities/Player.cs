@@ -43,7 +43,7 @@ namespace Loto3000.Domain.Entities
                 throw new ValidationException("Deposited amount must be higher than 5$.");
             }
 
-            _ = Transactions.Count == 0 ? Credits += credits * FirstTransactionPromoOffer : Credits += credits;
+            Credits += Transactions.Count == 0 ? credits * FirstTransactionPromoOffer : credits;
 
             if (IsTenthTransaction)
             {
@@ -62,7 +62,7 @@ namespace Loto3000.Domain.Entities
                 throw new ValidationException("Not enough credits to buy ticket");
             }
 
-            var ticket = new Ticket(this, draw);
+            Ticket ticket = new(this, draw);
             
             Credits -= TicketPrice;
             ticket.CombinationGenerator(numbers);

@@ -8,6 +8,6 @@
         public double DepositAmount { get; set; }
         public DateTime TransactionDate { get; set; }
         public Player? Player { get; set; }
-        public int PlayerId { get; set; }
+        public int? PlayerId { get; set; }
     }
 }

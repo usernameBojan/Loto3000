@@ -3,25 +3,25 @@ using Microsoft.OpenApi.Models;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class SwaggerConfiguration
+    internal static class SwaggerConfiguration
     {
-        public static IServiceCollection AddSwaggerGenConfiguration(this IServiceCollection service)
+        internal static IServiceCollection AddSwaggerGenConfiguration(this IServiceCollection service)
         {
-            service.AddSwaggerGen(opt =>
+            service.AddSwaggerGen(opts =>
             {
-                opt.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+                opts.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new()
                 {
                     Description = "JWT Authorization Header",
                     Type = SecuritySchemeType.Http,
                     Scheme = JwtBearerDefaults.AuthenticationScheme
                 });
 
-                opt.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                opts.AddSecurityRequirement(new ()
                 {
                     {
-                        new OpenApiSecurityScheme()
+                        new()
                         {
-                            Reference = new OpenApiReference
+                            Reference = new()
                                 {
                                     Id = JwtBearerDefaults.AuthenticationScheme,
                                     Type = ReferenceType.SecurityScheme

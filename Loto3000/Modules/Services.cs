@@ -3,14 +3,16 @@ using Loto3000.Application.Services.Implementation;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class Services
+    internal static class Services
     {
-        public static IServiceCollection AddServices(this IServiceCollection services)
+        internal static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IPlayerService, PlayerService>();
             services.AddScoped<ILoginService, LoginService>();  
             services.AddScoped<IDrawService, DrawService>();
+            services.AddScoped<ITicketService, TicketService>();
+            services.AddScoped<ITransactionService, TransactionService>();
 
             return services;
         }

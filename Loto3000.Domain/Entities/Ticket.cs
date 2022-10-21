@@ -20,9 +20,10 @@ namespace Loto3000.Domain.Entities
         public IList<Combination> CombinationNumbers { get; set; } = new List<Combination>();
         public DateTime TicketCreatedTime { get; set; } = DateTime.Now;
         public Player? Player { get; set; }
-        public int PlayerId { get; set; }
+        public int? PlayerId { get; set; }
         public Draw? Draw { get; set; }
         public Prizes Prize { get; set; }
+
         public void CombinationGenerator(int[] nums)
         {
             if (nums.Length != AllowedNumbersForTicket)
@@ -47,7 +48,7 @@ namespace Loto3000.Domain.Entities
 
                 CombinationNumbers.Add(combination);
 
-                _ = i != nums.Length - 1 ? CombinationNumbersString += $"{nums[i]}, " : CombinationNumbersString += $"{nums[i]}.";
+                CombinationNumbersString += i != nums.Length - 1 ? $"{nums[i]}, " : $"{nums[i]}.";
             }
         }
         public void AssignPrize(int num)

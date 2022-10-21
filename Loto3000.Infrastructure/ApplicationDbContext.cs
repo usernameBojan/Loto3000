@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Loto3000.Domain.Entities;
-using Loto3000.Infrastructure.EntityFramework.EntityTypeConfiguration;
 
 namespace Loto3000.Infrastructure
 {
@@ -18,5 +17,8 @@ namespace Loto3000.Infrastructure
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Draw> Draws { get; set; }
         public DbSet<TransactionTracker> Transactions { get; set; }
+        public DbSet<NonregisteredPlayer> NonregisteredPlayer { get; set; }
+        public DbSet<NonregisteredPlayerTicket> NonregisteredPlayerTickets { get; set; }
+        public DbSet<NonregisteredPlayerTransaction> NonregisteredPlayerTransactions { get; set; }
     }
 }

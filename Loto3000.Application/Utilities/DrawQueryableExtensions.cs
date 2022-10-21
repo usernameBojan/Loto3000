@@ -2,14 +2,14 @@
 
 namespace Loto3000.Application.Utilities
 {
-    public static class DrawQueryableExtensions
+    internal static class DrawQueryableExtensions
     {
-        public static IQueryable<Draw> WhereActiveDraw(this IQueryable<Draw> query)
+        internal static IQueryable<Draw> WhereActiveDraw(this IQueryable<Draw> query)
         {
             var date = DateTime.Now;
             return query.Where(x => x.SessionStart <= date && x.SessionEnd >= date);
         }
-        public static IQueryable<Draw> WhereConcludedDraw(this IQueryable<Draw> query)
+        internal static IQueryable<Draw> WhereConcludedDraw(this IQueryable<Draw> query)
         {
             var date = DateTime.Now;
             return query.Where(x => x.SessionEnd < date);

@@ -2,7 +2,16 @@
 {
     public class Draw : IEntity
     {
+        private const int minutesAndSeconds = 0;
+        private const int hour = 20;
         public Draw() { }
+        public Draw(int id, DateTime drawTime, DateTime sessionStart, DateTime sessionEnd)
+        {
+            Id = id;
+            DrawTime = drawTime;
+            SessionStart = sessionStart;
+            SessionEnd = sessionEnd;
+        }
         public int Id { get; set; }
         public string DrawNumbersString {get; set; } = string.Empty;
         public IList<DrawNumbers> DrawNumbers { get; private set; } = new List<DrawNumbers>();
@@ -24,26 +33,18 @@
 
             for (int i = 0; i < 8; i++)
             {
-                DrawNumbers drawNumbers = new();
-
-                drawNumbers.Number = winningNums[i];
+                DrawNumbers drawNumbers = new()
+                {
+                    Number = winningNums[i]
+                };
 
                 drawNums.Add(drawNumbers);
 
-                _ = i != winningNums.Count - 1 ? drawNumsString += $"{winningNums[i]}, " : drawNumsString += $"{winningNums[i]}.";
+                drawNumsString += i != winningNums.Count - 1 ? $"{winningNums[i]}, " : $"{winningNums[i]}.";
             }
-            _ = DateTime.Now.Day == DrawTime.Day? DrawNumbers = drawNums : DrawNumbers = new List<DrawNumbers>();
-            _ = DrawNumbers.Count == 0 ? DrawNumbersString = $"Draw is scheduled for {SessionEnd.Date.ToString().Substring(0, 10)}." : DrawNumbersString = drawNumsString;
+            DrawNumbers = DateTime.Now.Day == DrawTime.Day ? DrawNumbers = drawNums : new List<DrawNumbers>();
+            DrawNumbersString = DrawNumbers.Count == 0 ? $"Draw is scheduled for {SessionEnd.Date.ToString().Substring(0, 10)}." : drawNumsString;
         }
-        //GUIDELINES FOR TESTING
-        //MAKE SURE THERE ARE NO DRAWS IN DATABASE
-        //COMMENT THE FIRST IF STATEMENT IN InitiateDraw() IN DrawService.cs WHICH CHECKS IF DRAW DATE IS EQUAL TO TODAYS DATE
-        // CHANGE THE DrawTime.Day CONDITION IN _ = DateTime.Now.Day == DrawTime.Day? IN DrawNums() METHOD (line 35) WITH THE NUMBER VALUE OF TODAYS DATE
-        //FIRST, DECOMMENT THE COMMENTED CODE BLOCK IN SetDrawSession() AND COMMENT THE CODE BLOCK BELLOW
-        //ACTIVATE DRAW WITH ActivateFirstDraw ACTION IN DrawController.cs WITH SWAGGER OR POSTMAN (FRONT-END IMPLEMENTATION TO DO)
-        //RETURN TO Draw.cs
-        //DECOMMENT THE ORIGINAL(LOWER) CODE BLOCK IN SetDrawSession() AND COMMENT THE TESTING ONE(UPPER)
-        //INITIATE DRAW WITH InitiateDraw ACTION IN DrawController.cs WITH SWAGGER OR POSTMAN (FRONT-END IMPLEMENTATION TO DO)
         private static int DaysInMonth(int monthValue)
         {
             int[] thirtyDaysArr = { 4, 6, 9, 11 };
@@ -51,48 +52,56 @@
 
             if(monthValue != 2)
             {
+                for (int i = 0; i < thirtyOneDaysArr.Length; i++)
+                {
+                    if (monthValue == thirtyOneDaysArr[i])
+                        return 31;
+                };
+
                 for (int i = 0; i < thirtyDaysArr.Length; i++)
                 {
                     if (monthValue == thirtyDaysArr[i]) 
                         return 30;
-                };
-
-                for (int i = 0; i < thirtyOneDaysArr.Length; i++)
-                {
-                    if (monthValue == thirtyOneDaysArr[i]) 
-                        return 31;
-                };
+                };                
             };
 
             return 28;
         }
         public void SetDrawSession()
         {
-            const int minutesAndSeconds = 0;
-            const int hour = 20;
-
             int month = DateTime.Now.Month;
             int monthNext;
-            _ = month == 12 ? monthNext = 1 : monthNext = month + 1;
+            monthNext = month == 12 ? 1 : month + 1;
 
             int days = DaysInMonth(month);
             int daysNext = DaysInMonth(monthNext);
 
             int year = DateTime.Now.Year;
             int yearNext;
-            _ = monthNext == 1 ? yearNext = year + 1 : yearNext = year;
+            yearNext = monthNext == 1 ? year + 1 : year;
 
-            #region FOR TESTING
-            //DrawTime = new DateTime(yearNext, monthNext - 1, daysNext - 1, hour, minutesAndSeconds, minutesAndSeconds);
-            //SessionStart = new DateTime(year, month - 1, days - 1, hour, minutesAndSeconds, minutesAndSeconds);
-            //SessionEnd = new DateTime(yearNext, monthNext - 1, daysNext - 1, hour, minutesAndSeconds, minutesAndSeconds);
-            #endregion
+            DrawTime = new(yearNext, monthNext, daysNext, hour, minutesAndSeconds, minutesAndSeconds);
+            SessionStart = new(year, month, days, hour, minutesAndSeconds, minutesAndSeconds);
+            SessionEnd = new(yearNext, monthNext, daysNext, hour, minutesAndSeconds, minutesAndSeconds);
+        }
+        public static Draw SetFirstSession()
+        {
+            int month = DateTime.Now.Month;
+            int monthNext;
+            monthNext = month == 12 ? 1 : month + 1;
 
-            #region ORIGINAL
-            DrawTime = new DateTime(yearNext, monthNext, daysNext, hour, minutesAndSeconds, minutesAndSeconds);
-            SessionStart = new DateTime(year, month, days, hour, minutesAndSeconds, minutesAndSeconds);
-            SessionEnd = new DateTime(yearNext, monthNext, daysNext, hour, minutesAndSeconds, minutesAndSeconds);
-            #endregion
+            int day = DateTime.Now.Day;
+            int days = DaysInMonth(month);
+
+            int year = DateTime.Now.Year;
+            int yearNext;
+            yearNext = monthNext == 1 ? year + 1 : year;
+
+            var time = new DateTime(yearNext, month, days, hour, minutesAndSeconds, minutesAndSeconds);
+            var start = new DateTime(year, month, day, 0, minutesAndSeconds, minutesAndSeconds);
+            var end = new DateTime(yearNext, month, days, hour, minutesAndSeconds, minutesAndSeconds);
+
+            return new(1, time, start, end);
         }
     }
 }
