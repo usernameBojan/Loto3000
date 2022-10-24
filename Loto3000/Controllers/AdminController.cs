@@ -25,6 +25,13 @@ namespace Loto3000.Controllers
             this.transactionService = transactionService;
         }
 
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
+        [HttpGet]
+        public ActionResult Manage()
+        {
+            return Ok();
+        }
+
         [Authorize(Roles = SystemRoles.SuperAdmin)]
         [HttpGet("{id:int}")]
         public ActionResult<AdminDto> GetAdmin([FromRoute] int id)
@@ -54,6 +61,13 @@ namespace Loto3000.Controllers
         }
 
         [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
+        [HttpGet("registered-transactions")]
+        public ActionResult<IList<TransactionTrackerDto>> GetRegisteredPlayerTransactions()
+        {
+            return Ok(transactionService.GetRegisteredPlayersTransactions());
+        }
+
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
         [HttpGet("nonregistered-transactions")]
         public ActionResult<IList<TransactionTrackerDto>> GetNonregisteredPlayersTransactions()
         {
@@ -74,6 +88,19 @@ namespace Loto3000.Controllers
             return Ok(ticketService.GetAllTickets());
         }
 
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
+        [HttpGet("active-tickets")]
+        public ActionResult<IList<TicketDto>> GetActiveTickets()
+        {
+            return Ok(ticketService.GetAllTickets());
+        }
+
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
+        [HttpGet("past-tickets")]
+        public ActionResult<IList<TicketDto>> GetPastTickets()
+        {
+            return Ok(ticketService.GetAllTickets());
+        }
         [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
         [HttpGet("registered-tickets")]
         public ActionResult<IList<TicketDto>> GetRegisteredPlayersTickets()

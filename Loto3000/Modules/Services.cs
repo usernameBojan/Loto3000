@@ -13,6 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IDrawService, DrawService>();
             services.AddScoped<ITicketService, TicketService>();
             services.AddScoped<ITransactionService, TransactionService>();
+            services.AddHostedService<DrawBackgroundWorker>();
 
             return services;
         }

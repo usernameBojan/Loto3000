@@ -12,6 +12,12 @@
             SessionStart = sessionStart;
             SessionEnd = sessionEnd;
         }
+        public Draw(DateTime drawTime, DateTime sessionStart, DateTime sessionEnd)
+        {
+            DrawTime = drawTime;
+            SessionStart = sessionStart;
+            SessionEnd = sessionEnd;
+        }
         public int Id { get; set; }
         public string DrawNumbersString {get; set; } = string.Empty;
         public IList<DrawNumbers> DrawNumbers { get; private set; } = new List<DrawNumbers>();
@@ -42,7 +48,8 @@
 
                 drawNumsString += i != winningNums.Count - 1 ? $"{winningNums[i]}, " : $"{winningNums[i]}.";
             }
-            DrawNumbers = DateTime.Now.Day == DrawTime.Day ? DrawNumbers = drawNums : new List<DrawNumbers>();
+
+            DrawNumbers = DateTime.Now.Day == DrawTime.Day ? drawNums : new List<DrawNumbers>();
             DrawNumbersString = DrawNumbers.Count == 0 ? $"Draw is scheduled for {SessionEnd.Date.ToString().Substring(0, 10)}." : drawNumsString;
         }
         private static int DaysInMonth(int monthValue)
@@ -67,7 +74,7 @@
 
             return 28;
         }
-        public void SetDrawSession()
+        public static Draw SetDrawSession()
         {
             int month = DateTime.Now.Month;
             int monthNext;
@@ -80,9 +87,11 @@
             int yearNext;
             yearNext = monthNext == 1 ? year + 1 : year;
 
-            DrawTime = new(yearNext, monthNext, daysNext, hour, minutesAndSeconds, minutesAndSeconds);
-            SessionStart = new(year, month, days, hour, minutesAndSeconds, minutesAndSeconds);
-            SessionEnd = new(yearNext, monthNext, daysNext, hour, minutesAndSeconds, minutesAndSeconds);
+            var time = new DateTime(yearNext, monthNext, daysNext, hour, minutesAndSeconds, minutesAndSeconds);
+            var start = new DateTime(year, month, days, hour, minutesAndSeconds, minutesAndSeconds);
+            var end = new DateTime(yearNext, monthNext, daysNext, hour, minutesAndSeconds, minutesAndSeconds);
+
+            return new(time, start, end);
         }
         public static Draw SetFirstSession()
         {

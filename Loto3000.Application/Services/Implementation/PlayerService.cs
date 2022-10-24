@@ -120,7 +120,7 @@ namespace Loto3000.Application.Services.Implementation
             player.ClearVerificationCode();
 
             playerRepository.Update(player);
-        }        
+        }
         public void ChangePassword(ChangePasswordDto dto, int id)
         {
             var player = playerRepository.GetById(id) ?? throw new NotFoundException();
@@ -133,7 +133,6 @@ namespace Loto3000.Application.Services.Implementation
             if(!hasher.Verify(dto.OldPassword, player.Password))
             {
                 throw new ValidationException("Old password is wrong");
-
             }
 
             player.Password = hasher.HashToString(dto.Password);

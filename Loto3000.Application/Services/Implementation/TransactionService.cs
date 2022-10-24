@@ -49,7 +49,7 @@ namespace Loto3000.Application.Services.Implementation
 
             return transactions.ToList();
         }
-        public IEnumerable<TransactionTrackerDto> GetRegisteredPlayersTickets()
+        public IEnumerable<TransactionTrackerDto> GetRegisteredPlayersTransactions()
         {
             var transactions = transactionsRepository.Query()
                                                      .Where(x => x.PlayerId != null)

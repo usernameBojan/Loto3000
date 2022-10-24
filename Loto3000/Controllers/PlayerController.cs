@@ -28,6 +28,12 @@ namespace Loto3000.Controllers
 
         [Authorize(Roles = SystemRoles.Player)]
         [HttpGet]
+        public ActionResult<PlayerDto> Player()
+        {
+            return Ok($"{User.FindFirstValue(ClaimTypes.Name)} {User.FindFirstValue(ClaimTypes.Surname)}");
+        }
+
+        [HttpGet("get-player")]
         public ActionResult<PlayerDto> GetPlayer()
         {
             var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -89,7 +95,7 @@ namespace Loto3000.Controllers
         }
 
         [Authorize(Policy = SystemPolicies.MustHaveId)]
-        [HttpGet("/ticket/{ticketId:int}")]
+        [HttpGet("ticket/{ticketId:int}")]
         public ActionResult<IEnumerable> GetPlayerTicket([FromRoute] int ticketId)
         {
             var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -107,12 +113,41 @@ namespace Loto3000.Controllers
         }
 
         [Authorize(Policy = SystemPolicies.MustHaveId)]
+        [HttpGet("active-tickets")]
+        public ActionResult<IEnumerable<TicketDto>> GetPlayerActiveTickets()
+        {
+            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return Ok(ticketService.GetPlayerActiveTickets(id));
+        }
+
+        [Authorize(Policy = SystemPolicies.MustHaveId)]
+        [HttpGet("past-tickets")]
+        public ActionResult<IEnumerable<TicketDto>> GetPlayerPasrtTickets()
+        {
+            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return Ok(ticketService.GetPlayerPastTickets(id));
+        }
+
+        [Authorize(Policy = SystemPolicies.MustHaveId)]
         [HttpPost("change-password")]
         public ActionResult ChangePassword([FromBody] ChangePasswordDto dto)
         {
             var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             playerService.ChangePassword(dto, id);
+
+            return Ok();
+        }
+
+        [Authorize(Policy = SystemPolicies.MustHaveId)]
+        [HttpPost("change-username")]
+        public ActionResult ChangeUsername([FromBody] ChangeUsernameDto dto)
+        {
+            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            playerService.ChangeUsername(dto, id);
 
             return Ok();
         }

@@ -9,8 +9,6 @@ namespace Loto3000.Application.Services
     {
         DrawDto GetDraw(int id);
         IEnumerable<DrawDto> GetDraws();
-        DrawDto ActivateDrawSession();
-        DrawDto InitiateDraw();
         IEnumerable<WinnersDto> DisplayWinners();
     }
 }

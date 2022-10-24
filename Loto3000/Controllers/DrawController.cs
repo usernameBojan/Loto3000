@@ -28,11 +28,5 @@ namespace Loto3000.Controllers
         {
             return Ok(service.GetDraws());
         }
-
-        [HttpPost("initiate-draw")]
-        public ActionResult<DrawDto> InitiateDraw()
-        {
-            return Ok(service.InitiateDraw());
-        }
     }
 }

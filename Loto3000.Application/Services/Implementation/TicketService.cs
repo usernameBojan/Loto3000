@@ -5,6 +5,7 @@ using Loto3000.Application.Repositories;
 using Loto3000.Application.Utilities;
 using Loto3000.Domain.Entities;
 using Loto3000.Domain.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Loto3000.Application.Services.Implementation
 {
@@ -42,6 +43,7 @@ namespace Loto3000.Application.Services.Implementation
         public TicketDto GetPlayerTicket(int id, int ticketId)
         {
             var ticket = ticketRepository.Query()
+                                         .Include(x => x.Draw)
                                          .Where(t => t.PlayerId == id)
                                          .FirstOrDefault(t => t.Id == ticketId);
 
@@ -49,19 +51,63 @@ namespace Loto3000.Application.Services.Implementation
         }
         public TicketDto GetNonregisteredPlayerTicket(int ticketId)
         {
-            var ticket = nonregisteredPlayerTicketRepository.Query().FirstOrDefault(t => t.Id == ticketId);
-
+            var ticket = nonregisteredPlayerTicketRepository.Query().Include(x => x.Draw).FirstOrDefault(t => t.Id == ticketId);
             return mapper.Map<TicketDto>(ticket);
         }
         public IEnumerable<TicketDto> GetAllTickets()
         {
-            var tickets = ticketRepository.Query().Select(t => mapper.Map<TicketDto>(t));
+            var tickets = ticketRepository.Query().Include(x => x.Draw).Select(t => mapper.Map<TicketDto>(t));
+
+            return tickets.ToList();
+        }
+        public IEnumerable<TicketDto> GetActiveTickets()
+        {
+            var draw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new NotFoundException();
+
+            var tickets = ticketRepository.Query()
+                                          .Include(x => x.Draw)
+                                          .Where(x => x.Draw!.Id == draw.Id)
+                                          .Select(t => mapper.Map<TicketDto>(t));
+
+            return tickets.ToList();
+        }
+        public IEnumerable<TicketDto> GetPastTickets()
+        {
+            var draw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new NotFoundException();
+
+            var tickets = ticketRepository.Query()
+                                          .Include(x => x.Draw)
+                                          .Where(x => x.Draw!.Id != draw.Id)
+                                          .Select(t => mapper.Map<TicketDto>(t));
+
+            return tickets.ToList();
+        }
+        public IEnumerable<TicketDto> GetPlayerActiveTickets(int id)
+        {
+            var draw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new NotFoundException();
+
+            var tickets = ticketRepository.Query()
+                                          .Include(x => x.Draw)
+                                          .Where(x => x.Draw!.Id == draw.Id && x.PlayerId == id)
+                                          .Select(t => mapper.Map<TicketDto>(t));
+
+            return tickets.ToList();
+        }
+        public IEnumerable<TicketDto> GetPlayerPastTickets(int id)
+        {
+            var draw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new NotFoundException();
+
+            var tickets = ticketRepository.Query()
+                                          .Include(x => x.Draw)
+                                          .Where(x => x.Draw!.Id != draw.Id && x.PlayerId == id)
+                                          .Select(t => mapper.Map<TicketDto>(t));
 
             return tickets.ToList();
         }
         public IEnumerable<TicketDto> GetRegisteredPlayersTickets()
         {
             var tickets = ticketRepository.Query()
+                                          .Include(x => x.Draw)
                                           .Where(x => x.PlayerId != null)
                                           .Select(t => mapper.Map<TicketDto>(t));
 
@@ -69,13 +115,14 @@ namespace Loto3000.Application.Services.Implementation
         }
         public IEnumerable<TicketDto> GetNonregisteredPlayersTickets()
         {
-            var tickets = nonregisteredPlayerTicketRepository.Query().Select(t => mapper.Map<TicketDto>(t));
+            var tickets = nonregisteredPlayerTicketRepository.Query().Include(x => x.Draw).Select(t => mapper.Map<TicketDto>(t));
 
             return tickets.ToList();
         }
         public IEnumerable<TicketDto> GetPlayerTickets(int id)
         {
             var tickets = ticketRepository.Query()
+                                          .Include(x => x.Draw)
                                           .Where(t => t.PlayerId == id)
                                           .Select(t => mapper.Map<TicketDto>(t));
 

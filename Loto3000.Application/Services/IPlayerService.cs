@@ -1,7 +1,5 @@
 ﻿using Loto3000.Application.Dto.Player;
 using Loto3000.Application.Dto.PlayerAccountManagment;
-using Loto3000.Application.Dto.Transactions;
-using Loto3000.Application.Dto.Tickets;
 
 namespace Loto3000.Application.Services
 {
