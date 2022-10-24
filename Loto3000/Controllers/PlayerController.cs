@@ -141,17 +141,6 @@ namespace Loto3000.Controllers
             return Ok();
         }
 
-        [Authorize(Policy = SystemPolicies.MustHaveId)]
-        [HttpPost("change-username")]
-        public ActionResult ChangeUsername([FromBody] ChangeUsernameDto dto)
-        {
-            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            playerService.ChangeUsername(dto, id);
-
-            return Ok();
-        }
-
         [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
         [HttpDelete("{id:int}")]
         public ActionResult DeletePlayer(int id)
