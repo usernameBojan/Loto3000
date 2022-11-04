@@ -30,7 +30,7 @@ namespace Loto3000.Controllers
         [HttpGet]
         public ActionResult<PlayerDto> Player()
         {
-            return Ok($"{User.FindFirstValue(ClaimTypes.Name)} {User.FindFirstValue(ClaimTypes.Surname)}");
+            return Ok($"Player: {User.FindFirstValue(ClaimTypes.Name)} {User.FindFirstValue(ClaimTypes.Surname)}");
         }
 
         [HttpGet("get-player")]
@@ -142,7 +142,7 @@ namespace Loto3000.Controllers
         }
 
         [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
-        [HttpDelete("{id:int}")]
+        [HttpDelete("delete-player/{id:int}")]
         public ActionResult DeletePlayer(int id)
         {
             playerService.DeletePlayer(id);

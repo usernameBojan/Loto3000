@@ -76,7 +76,14 @@ namespace Loto3000.Controllers
         [HttpGet("winners-board")]
         public ActionResult<IEnumerable<WinnersDto>> WinnersBoard()
         {
-            return Ok(drawService.DisplayWinners());
+            try
+            {
+                return Ok(drawService.DisplayWinners());
+            }
+            catch(Exception ex)
+            {
+                return NotFound(ex);
+            }
         }
     }
 }

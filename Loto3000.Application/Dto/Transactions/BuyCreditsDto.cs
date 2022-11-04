@@ -17,6 +17,7 @@ namespace Loto3000.Application.Dto.Transactions
         public string CVV2CVC2Code { get; set; } = string.Empty;    
         [Required]
         public DateTime CardExpirationDate { get; set; }
+        public DateTime TransactionDate => DateTime.Now;
         [Required]
         [RegularExpression("^-?\\d+(?:\\.\\d+)?$", ErrorMessage = "Wrong deposit format.")]
         public double DepositAmount { get; set; }

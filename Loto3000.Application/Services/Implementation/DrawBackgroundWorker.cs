@@ -27,8 +27,6 @@ namespace Loto3000.Application.Services.Implementation
                 var nonregisteredPlayersTicketsRepository = scope.ServiceProvider.GetRequiredService<IRepository<NonregisteredPlayerTicket>>();
                 var drawNumbersRepository = scope.ServiceProvider.GetRequiredService<IRepository<DrawNumbers>>();
                 var combinationRepository = scope.ServiceProvider.GetRequiredService<IRepository<Combination>>();
-                var emailSender = scope.ServiceProvider.GetRequiredService<IEmailSender>();
-
                 var draw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new NotFoundException("No draws yet.");
 
                 TimeSpan drawTime = new(draw.DrawTime.Ticks - DateTime.Now.Ticks);
@@ -65,8 +63,11 @@ namespace Loto3000.Application.Services.Implementation
                     ticketsRepository.Update(ticket);
                 }
              
-                drawRepository.Update(draw);            
-                drawRepository.Create(Draw.SetDrawSession());
+                drawRepository.Update(draw);
+
+                var newDraw = new Draw();
+                newDraw.SetDrawSession();
+                drawRepository.Create(newDraw);
 
                 await Task.Delay(drawTime, stoppingToken);
             }

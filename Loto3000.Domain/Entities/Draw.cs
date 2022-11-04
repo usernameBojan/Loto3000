@@ -74,7 +74,7 @@
 
             return 28;
         }
-        public static Draw SetDrawSession()
+        public void SetDrawSession()
         {
             int month = DateTime.Now.Month;
             int monthNext;
@@ -87,11 +87,10 @@
             int yearNext;
             yearNext = monthNext == 1 ? year + 1 : year;
 
-            var time = new DateTime(yearNext, monthNext, daysNext, hour, minutesAndSeconds, minutesAndSeconds);
-            var start = new DateTime(year, month, days, hour, minutesAndSeconds, minutesAndSeconds);
-            var end = new DateTime(yearNext, monthNext, daysNext, hour, minutesAndSeconds, minutesAndSeconds);
+            DrawTime = new DateTime(yearNext, monthNext, daysNext, hour, minutesAndSeconds, minutesAndSeconds);
+            SessionStart = new DateTime(year, month, days, hour, minutesAndSeconds, minutesAndSeconds);
+            SessionEnd = new DateTime(yearNext, monthNext, daysNext, hour, minutesAndSeconds, minutesAndSeconds);
 
-            return new(time, start, end);
         }
         public static Draw SetFirstSession()
         {

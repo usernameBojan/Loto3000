@@ -23,6 +23,21 @@ namespace Loto3000.Controllers
             return Ok(service.GetDraw(id));
         }
 
+        [AllowAnonymous]
+        [HttpPost("demo-draw")]
+        public ActionResult<DrawDto> InitiateDemoDraw()
+        {
+            service.InitiateDemoDraw();
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("active-draw")]
+        public ActionResult<DrawDto> GetActiveDraw()
+        {
+            return Ok(service.GetActiveDraw());
+        }
+
         [HttpGet("draws")]
         public ActionResult<IEnumerable<DrawDto>> GetAllDraws()
         {

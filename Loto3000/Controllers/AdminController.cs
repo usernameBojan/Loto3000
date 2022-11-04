@@ -5,6 +5,7 @@ using Loto3000.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Loto3000.Application.Dto.Tickets;
+using System.Security.Claims;
 
 namespace Loto3000.Controllers
 {
@@ -29,7 +30,7 @@ namespace Loto3000.Controllers
         [HttpGet]
         public ActionResult Manage()
         {
-            return Ok();
+            return Ok($"Admin: {User.FindFirstValue(ClaimTypes.Name)}");
         }
 
         [Authorize(Roles = SystemRoles.SuperAdmin)]
@@ -92,14 +93,14 @@ namespace Loto3000.Controllers
         [HttpGet("active-tickets")]
         public ActionResult<IList<TicketDto>> GetActiveTickets()
         {
-            return Ok(ticketService.GetAllTickets());
+            return Ok(ticketService.GetActiveTickets());
         }
 
         [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
         [HttpGet("past-tickets")]
         public ActionResult<IList<TicketDto>> GetPastTickets()
         {
-            return Ok(ticketService.GetAllTickets());
+            return Ok(ticketService.GetPastTickets());
         }
         [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
         [HttpGet("registered-tickets")]
@@ -135,7 +136,7 @@ namespace Loto3000.Controllers
         }
 
         [Authorize(Roles = SystemRoles.SuperAdmin)]
-        [HttpDelete("admins/{id:int}")]
+        [HttpDelete("delete-admin/{id:int}")]
         public ActionResult DeleteAdmin(int id)
         {
             service.DeleteAdmin(id);

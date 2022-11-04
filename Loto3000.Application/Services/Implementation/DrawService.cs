@@ -6,6 +6,7 @@ using Loto3000.Application.Repositories;
 using Loto3000.Application.Utilities;
 using Loto3000.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Loto3000.Application.Services.Implementation
 {
@@ -16,6 +17,7 @@ namespace Loto3000.Application.Services.Implementation
         private readonly IRepository<Ticket> ticketRepository;
         private readonly IRepository<Combination> combinationRepository;
         private readonly IRepository<NonregisteredPlayerTicket> nonregisteredPlayerTicketsRepository;
+        private readonly IRepository<NonregisteredPlayer> nonregisteredPlayerRepository;
         private readonly IMapper mapper;
         public DrawService(
             IRepository<Draw> drawRepository,
@@ -23,6 +25,7 @@ namespace Loto3000.Application.Services.Implementation
             IRepository<Ticket> ticketRepository,
             IRepository<Combination> combinationRepository,
             IRepository<NonregisteredPlayerTicket> nonregisteredPlayerTicketsRepository,
+            IRepository<NonregisteredPlayer> nonregisteredPlayerRepository,
             IMapper mapper
             )
         {
@@ -31,6 +34,7 @@ namespace Loto3000.Application.Services.Implementation
             this.ticketRepository = ticketRepository;
             this.combinationRepository = combinationRepository;
             this.nonregisteredPlayerTicketsRepository = nonregisteredPlayerTicketsRepository;
+            this.nonregisteredPlayerRepository = nonregisteredPlayerRepository;
             this.mapper = mapper;
         }
         public DrawDto GetDraw(int id)
@@ -39,18 +43,67 @@ namespace Loto3000.Application.Services.Implementation
 
             return mapper.Map<DrawDto>(draw);
         }
+        public DrawDto GetActiveDraw()
+        {
+            var draw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new NotFoundException();
+
+            return mapper.Map<DrawDto>(draw);
+        }
         public IEnumerable<DrawDto> GetDraws()
         {
             var draws = drawRepository.Query().Select(d => mapper.Map<DrawDto>(d));
 
             return draws.ToList();
-        }        
+        }
+        public void InitiateDemoDraw()
+        {
+            var date = DateTime.Now;
+
+            var demoDraw = new Draw(date, date, date);
+            drawRepository.Create(demoDraw);
+
+
+            for (int i=1; i<=51; i++)
+            {
+                Random random = new();
+                var nums = Enumerable.Range(1, 37).OrderBy(x => random.Next()).Take(7).ToArray();
+
+                var player = new NonregisteredPlayer($"Demo Player {i}", $"player{i}@mail.com", 5);
+                player.CreateTicket(nums, demoDraw);
+
+                nonregisteredPlayerRepository.Create(player);
+            }
+
+            demoDraw.DrawNums();
+
+            var validTickets = ticketRepository.Query()
+                                                    .Include(x => x.Draw)
+                                                    .Where(x => x.Draw!.Id == demoDraw.Id)
+                                                    .ToList();
+
+            var combinations = combinationRepository.Query();
+
+            foreach (var ticket in validTickets)
+            {
+                ticket.NumbersGuessed = demoDraw.DrawNumbers.Select(x => x.Number)
+                                                        .Intersect(combinations
+                                                            .Where(comb => comb.TicketId == ticket.Id)
+                                                            .Select(comb => comb.Number))
+                                                        .ToList()
+                                                        .Count;
+
+                ticket.AssignPrize(ticket.NumbersGuessed);
+                ticketRepository.Update(ticket);
+            }
+
+            drawRepository.Update(demoDraw);
+        }
         public IEnumerable<WinnersDto> DisplayWinners()
         {
             const int LowestPrizeValue = 3;
 
             var winners = new List<WinnersDto>();
-            var draw = drawRepository.Query().WhereConcludedDraw().FirstOrDefault() ?? throw new NotFoundException();
+            var draw = drawRepository.Query().WhereConcludedDraw().OrderBy(x => x.Id).LastOrDefault() ?? throw new Exception("There are no concluded draws yet.");
 
             var registeredPlayersTickets = ticketRepository.Query()
                                                            .Include(x => x.Player)
