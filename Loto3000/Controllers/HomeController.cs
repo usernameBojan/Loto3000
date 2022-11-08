@@ -74,11 +74,11 @@ namespace Loto3000.Controllers
         }
 
         [HttpGet("winners-board")]
-        public ActionResult<IEnumerable<WinnersDto>> WinnersBoard()
+        public ActionResult<IEnumerable<WinnersDto>> WinnersBoard(DateTime drawTime = default)
         {
             try
             {
-                return Ok(drawService.DisplayWinners());
+                return Ok(drawService.DisplayWinners(drawTime));
             }
             catch(Exception ex)
             {

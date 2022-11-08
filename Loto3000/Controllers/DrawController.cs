@@ -38,6 +38,13 @@ namespace Loto3000.Controllers
             return Ok(service.GetActiveDraw());
         }
 
+        [AllowAnonymous]
+        [HttpGet("draw-dates")]
+        public ActionResult<IEnumerable<DateTime>> GetConcludedDrawsDates()
+        {
+            return Ok(service.GetConcludedDrawsDates());
+        }
+
         [HttpGet("draws")]
         public ActionResult<IEnumerable<DrawDto>> GetAllDraws()
         {

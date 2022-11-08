@@ -9,6 +9,7 @@ using Loto3000.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using HashidsNet;
+using Loto3000.Application.Dto.Statistics;
 
 namespace Loto3000.Application.Services.Implementation
 {
@@ -18,6 +19,7 @@ namespace Loto3000.Application.Services.Implementation
         private readonly IRepository<Player> playerRepository;
         private readonly IRepository<TransactionTracker> transactionsRepository;
         private readonly IRepository<Ticket> ticketRepository;
+        private readonly IRepository<Draw> drawRepository;
         private readonly IEmailSender emailSender;
         private readonly IPasswordHasher hasher;
         private readonly IMapper mapper;
@@ -27,6 +29,7 @@ namespace Loto3000.Application.Services.Implementation
             IRepository<Player> playerRepository,
             IRepository<TransactionTracker> transactionsRepository,
             IRepository<Ticket> ticketRepository,
+            IRepository<Draw> drawRepository,
             IEmailSender emailSender,
             IPasswordHasher hasher,
             IMapper mapper,
@@ -37,6 +40,7 @@ namespace Loto3000.Application.Services.Implementation
             this.playerRepository = playerRepository;
             this.transactionsRepository = transactionsRepository;
             this.ticketRepository = ticketRepository;
+            this.drawRepository = drawRepository;
             this.emailSender = emailSender;
             this.hasher = hasher;
             this.mapper = mapper;
@@ -168,6 +172,26 @@ namespace Loto3000.Application.Services.Implementation
             player.Password = hasher.HashToString(dto.Password);
 
             playerRepository.Update(player);
+        }
+        public PlayerTicketsStatisticsDto PlayerTicketsStatistics(int id)
+        {
+            var activeDraw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new NotFoundException("No active draws");
+
+            var player = playerRepository.Query()
+                                         .Include(x => x.Tickets)
+                                         .ThenInclude(x => x.Draw)
+                                         .Where(x => x.Id == id)
+                                         .FirstOrDefault() ?? throw new NotFoundException();
+
+            player.GetNumberOfActiveTickets(activeDraw);
+            player.GetNumberOfPrizesWon(activeDraw);
+
+            return mapper.Map<PlayerTicketsStatisticsDto>(player);
+        }
+        public PlayerTransactionsStatisticsDto PlayerTransactionsStatistics(int id)
+        {
+            var player = playerRepository.Query().Include(x => x.Transactions).Where(x => x.Id == id).FirstOrDefault() ?? throw new NotFoundException();
+            return mapper.Map<PlayerTransactionsStatisticsDto>(player);
         }
         public void DeletePlayer(int id)
         {

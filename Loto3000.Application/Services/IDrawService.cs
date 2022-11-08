@@ -10,7 +10,8 @@ namespace Loto3000.Application.Services
         DrawDto GetDraw(int id);
         IEnumerable<DrawDto> GetDraws();
         DrawDto GetActiveDraw();
-        IEnumerable<WinnersDto> DisplayWinners();
+        IEnumerable<DateTime> GetConcludedDrawsDates();
+        IEnumerable<WinnersDto> DisplayWinners(DateTime drawTime = default);
         void InitiateDemoDraw();
     }
 }

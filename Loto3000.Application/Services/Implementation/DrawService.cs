@@ -6,7 +6,6 @@ using Loto3000.Application.Repositories;
 using Loto3000.Application.Utilities;
 using Loto3000.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Loto3000.Application.Services.Implementation
 {
@@ -98,12 +97,22 @@ namespace Loto3000.Application.Services.Implementation
 
             drawRepository.Update(demoDraw);
         }
-        public IEnumerable<WinnersDto> DisplayWinners()
+        public IEnumerable<DateTime> GetConcludedDrawsDates()
+        {
+            return drawRepository.Query().WhereConcludedDraw().Select(x => x.DrawTime);
+        }
+        public IEnumerable<WinnersDto> DisplayWinners(DateTime drawTime = default)
         {
             const int LowestPrizeValue = 3;
 
             var winners = new List<WinnersDto>();
-            var draw = drawRepository.Query().WhereConcludedDraw().OrderBy(x => x.Id).LastOrDefault() ?? throw new Exception("There are no concluded draws yet.");
+            var draw = drawTime == default ? drawRepository.Query().WhereConcludedDraw().OrderBy(x => x.Id).LastOrDefault()
+                : drawRepository.Query().Where(x => x.DrawTime == drawTime).FirstOrDefault();
+
+            if(draw == null)
+            {
+                throw new Exception("There are no concluded draws yet.");
+            }
 
             var registeredPlayersTickets = ticketRepository.Query()
                                                            .Include(x => x.Player)

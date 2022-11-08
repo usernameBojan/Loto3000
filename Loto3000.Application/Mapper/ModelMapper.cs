@@ -6,6 +6,7 @@ using Loto3000.Application.Dto.PlayerAccountManagment;
 using Loto3000.Application.Dto.Tickets;
 using Loto3000.Domain.Entities;
 using Loto3000.Application.Dto.Draw;
+using Loto3000.Application.Dto.Statistics;
 
 namespace Loto3000.Application.Mapper
 {
@@ -14,7 +15,7 @@ namespace Loto3000.Application.Mapper
         public static MapperConfiguration GetConfiguration()
         {
 
-            MapperConfiguration cfg = new MapperConfiguration(x =>
+            return new(x =>
             {
                 x.CreateMap<Admin, AdminDto>();
 
@@ -44,9 +45,11 @@ namespace Loto3000.Application.Mapper
                 x.CreateMap<Ticket, TicketDto>();
 
                 x.CreateMap<Draw, DrawDto>();
-            });
 
-            return cfg;
+                x.CreateMap<Player, PlayerTicketsStatisticsDto>();
+
+                x.CreateMap<Player, PlayerTransactionsStatisticsDto>();
+            });
         }
     }
 }

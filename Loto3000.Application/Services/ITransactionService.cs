@@ -1,4 +1,5 @@
-﻿using Loto3000.Application.Dto.Transactions;
+﻿using Loto3000.Application.Dto.Statistics;
+using Loto3000.Application.Dto.Transactions;
 
 namespace Loto3000.Application.Services
 {
@@ -10,6 +11,7 @@ namespace Loto3000.Application.Services
         IEnumerable<TransactionTrackerDto> GetPlayerTransactions(int id);
         IEnumerable<TransactionTrackerDto> GetRegisteredPlayersTransactions();
         IEnumerable<TransactionTrackerDto> GetNonregisteredPlayersTransactions();
+        TransactionStatisticsDto TransactionStatistics();
         void BuyCredits(BuyCreditsDto dto, int id);
     }
 }

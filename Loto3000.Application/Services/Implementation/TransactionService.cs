@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Loto3000.Application.Dto.Statistics;
 using Loto3000.Application.Dto.Tickets;
 using Loto3000.Application.Dto.Transactions;
 using Loto3000.Application.Repositories;
@@ -62,6 +63,18 @@ namespace Loto3000.Application.Services.Implementation
             var transactions = nonregisteredPlayerTransactionRepository.Query().Select(t => mapper.Map<TransactionTrackerDto>(t));
 
             return transactions.ToList();
+        }
+        public TransactionStatisticsDto TransactionStatistics()
+        {
+            return new()
+            {
+                TotalTransactions = transactionsRepository.Query().Count(),
+                RegisteredPlayersTransactions = transactionsRepository.Query().Where(x => x.PlayerId != null).Count(),
+                NonregisteredPlayersTransactions = nonregisteredPlayerTransactionRepository.Query().Count(),
+                TotalDepositedAmount = transactionsRepository.Query().Sum(x => (int)x.DepositAmount),
+                RegisteredPlayersDepositedAmount = transactionsRepository.Query().Where(x => x.PlayerId != null).Sum(x => (int)x.DepositAmount),
+                NonregisteredPlayersDepositedAmount = nonregisteredPlayerTransactionRepository.Query().Sum(x => (int)x.DepositAmount)
+            };
         }
         public void BuyCredits(BuyCreditsDto dto, int id)
         { //REGEX USED https://ihateregex.io/expr/credit-card/ 

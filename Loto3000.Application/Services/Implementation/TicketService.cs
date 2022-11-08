@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HashidsNet;
+using Loto3000.Application.Dto.Statistics;
 using Loto3000.Application.Dto.Tickets;
 using Loto3000.Application.Repositories;
 using Loto3000.Application.Utilities;
@@ -127,6 +128,19 @@ namespace Loto3000.Application.Services.Implementation
                                           .Select(t => mapper.Map<TicketDto>(t));
 
             return tickets.ToList();
+        }
+        public TicketStatisticsDto TicketStatistics()
+        {
+            var activeDraw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new NotFoundException("No active draws");
+
+            return new()
+            {
+                TotalTickets = ticketRepository.Query().Count(),
+                ActiveTickets = ticketRepository.Query().Include(x => x.Draw).Where(x => x.Draw!.Id == activeDraw.Id).Count(),
+                RegisteredPlayersTickets = ticketRepository.Query().Where(x => x.PlayerId != null).Count(),
+                NonregisteredPlayersTickets = nonregisteredPlayerTicketRepository.Query().Count(),
+                TotalPrizesWon = ticketRepository.Query().Include(x => x.Draw).Where(x => x.Draw!.Id != activeDraw.Id && (int)x.Prize >= 3).Count()
+            };
         }
         public TicketDto CreateTicket(CreateTicketDto dto, int id)
         {

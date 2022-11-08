@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Loto3000.Application.Utilities;
 using System.Security.Claims;
 using Loto3000.Application.Dto.PlayerAccountManagment;
+using Loto3000.Application.Dto.Statistics;
 
 namespace Loto3000.Controllers
 {
@@ -123,7 +124,7 @@ namespace Loto3000.Controllers
 
         [Authorize(Policy = SystemPolicies.MustHaveId)]
         [HttpGet("past-tickets")]
-        public ActionResult<IEnumerable<TicketDto>> GetPlayerPasrtTickets()
+        public ActionResult<IEnumerable<TicketDto>> GetPlayerPastTickets()
         {
             var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
@@ -139,6 +140,24 @@ namespace Loto3000.Controllers
             playerService.ChangePassword(dto, id);
 
             return Ok();
+        }
+
+        [Authorize(Roles = SystemRoles.Player)]
+        [HttpGet("tickets-statistics")]
+        public ActionResult<PlayerTicketsStatisticsDto> PlayerTicketsStatistics()
+        {
+            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return Ok(playerService.PlayerTicketsStatistics(id));
+        }
+
+        [Authorize(Roles = SystemRoles.Player)]
+        [HttpGet("transactions-statistics")]
+        public ActionResult<PlayerTransactionsStatisticsDto> PlayerTransactionsStatistics()
+        {
+            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return Ok(playerService.PlayerTransactionsStatistics(id));
         }
 
         [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]

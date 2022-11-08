@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Loto3000.Application.Dto.Tickets;
 using System.Security.Claims;
+using Loto3000.Application.Dto.Statistics;
 
 namespace Loto3000.Controllers
 {
@@ -120,6 +121,20 @@ namespace Loto3000.Controllers
         public ActionResult<IList<TransactionTrackerDto>> GetNonregisteredPlayerTickets([FromRoute] int ticketId)
         {
             return Ok(ticketService.GetNonregisteredPlayerTicket(ticketId));
+        }
+
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
+        [HttpGet("transactions-statistics")]
+        public ActionResult<TransactionStatisticsDto> TransactionsStatistics()
+        {
+            return Ok(transactionService.TransactionStatistics());
+        }
+
+        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
+        [HttpGet("tickets-statistics")]
+        public ActionResult<TicketStatisticsDto> TicketsStatistics()
+        {
+            return Ok(ticketService.TicketStatistics());
         }
 
         [Authorize(Roles = SystemRoles.SuperAdmin)]
