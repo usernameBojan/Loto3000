@@ -111,8 +111,8 @@ namespace Loto3000.Application.Services.Implementation
             return mapper.Map<PlayerDto>(created);
 
             #region DUMMY MAIL
-            // use mail - jerrell.berge36@ethereal.email TO REGISTER, AND LOG IN on https://ethereal.email/ wtih
-            // emial - jerrell.berge36@ethereal.email and password - 5SfrbnJA85j8bArgmG to get verification code
+            // use mail - edmond.glover50@ethereal.email TO REGISTER, AND LOG IN on https://ethereal.email/ wtih
+            // emial - edmond.glover50@ethereal.email and password - nq8mt3nVU5fT58fKbF to get verification code
             //OR COMMENT -> if(!user.IsVerified) condition in LoginService.cs to login without verification
             #endregion
         }
@@ -153,8 +153,8 @@ namespace Loto3000.Application.Services.Implementation
             emailSender.SendEmail(EmailContents.ForgotPasswordSubject, EmailContents.ForgotPasswordBody(code), player.Email);
 
             #region DUMMY MAIL
-            // use mail - jerrell.berge36@ethereal.email TO REGISTER, AND LOG IN on https://ethereal.email/ wtih
-            // email - jerrell.berge36@ethereal.email and password - 5SfrbnJA85j8bArgmG to get recovery code
+            // use mail - edmond.glover50@ethereal.email TO REGISTER, AND LOG IN on https://ethereal.email/ wtih
+            // email - edmond.glover50@ethereal.email and password - nq8mt3nVU5fT58fKbF to get recovery code
             #endregion
 
             playerRepository.Update(player);

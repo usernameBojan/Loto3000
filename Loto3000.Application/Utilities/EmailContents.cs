@@ -8,7 +8,7 @@
         internal const string SuspendSubject = "Your Loto3000 account has been suspended";
         internal const string SuspendBody = "<p>The account on Loto3000 connected with this email has been suspended.</p>" +
             "<p>Reasons for this suspension may be some of the following:</p>" +
-            "<ul> <li>Suspicius activity</li> <li>Underage gambling</li> <Long period of inactivity</li> <li>Other</li> </ul>" +
+            "<ul> <li>Suspicious activity</li> <li>Underage gambling</li> <Long period of inactivity</li> <li>Other</li> </ul>" +
             "<p>If you wish further details you can address this issue <a href=\"mailto:support@loto3000.com\">here</a></p>" +
             "<p>Or, you can always open new account which will follow our rules of conduct.</p>";
         internal static string RegisterBody(string name, string code)
