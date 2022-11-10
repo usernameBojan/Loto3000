@@ -91,19 +91,6 @@ namespace Loto3000.Controllers
         }
 
         [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
-        [HttpGet("active-tickets")]
-        public ActionResult<IList<TicketDto>> GetActiveTickets()
-        {
-            return Ok(ticketService.GetActiveTickets());
-        }
-
-        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
-        [HttpGet("past-tickets")]
-        public ActionResult<IList<TicketDto>> GetPastTickets()
-        {
-            return Ok(ticketService.GetPastTickets());
-        }
-        [Authorize(Roles = $"{SystemRoles.Administrator},{SystemRoles.SuperAdmin}")]
         [HttpGet("registered-tickets")]
         public ActionResult<IList<TicketDto>> GetRegisteredPlayersTickets()
         {

@@ -114,24 +114,6 @@ namespace Loto3000.Controllers
         }
 
         [Authorize(Policy = SystemPolicies.MustHaveId)]
-        [HttpGet("active-tickets")]
-        public ActionResult<IEnumerable<TicketDto>> GetPlayerActiveTickets()
-        {
-            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            return Ok(ticketService.GetPlayerActiveTickets(id));
-        }
-
-        [Authorize(Policy = SystemPolicies.MustHaveId)]
-        [HttpGet("past-tickets")]
-        public ActionResult<IEnumerable<TicketDto>> GetPlayerPastTickets()
-        {
-            var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            return Ok(ticketService.GetPlayerPastTickets(id));
-        }
-
-        [Authorize(Policy = SystemPolicies.MustHaveId)]
         [HttpPost("change-password")]
         public ActionResult ChangePassword([FromBody] ChangePasswordDto dto)
         {

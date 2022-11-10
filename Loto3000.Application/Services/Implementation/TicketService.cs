@@ -61,50 +61,6 @@ namespace Loto3000.Application.Services.Implementation
 
             return tickets.ToList();
         }
-        public IEnumerable<TicketDto> GetActiveTickets()
-        {
-            var draw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new NotFoundException();
-
-            var tickets = ticketRepository.Query()
-                                          .Include(x => x.Draw)
-                                          .Where(x => x.Draw!.Id == draw.Id)
-                                          .Select(t => mapper.Map<TicketDto>(t));
-
-            return tickets.ToList();
-        }
-        public IEnumerable<TicketDto> GetPastTickets()
-        {
-            var draw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new NotFoundException();
-
-            var tickets = ticketRepository.Query()
-                                          .Include(x => x.Draw)
-                                          .Where(x => x.Draw!.Id != draw.Id)
-                                          .Select(t => mapper.Map<TicketDto>(t));
-
-            return tickets.ToList();
-        }
-        public IEnumerable<TicketDto> GetPlayerActiveTickets(int id)
-        {
-            var draw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new NotFoundException();
-
-            var tickets = ticketRepository.Query()
-                                          .Include(x => x.Draw)
-                                          .Where(x => x.Draw!.Id == draw.Id && x.PlayerId == id)
-                                          .Select(t => mapper.Map<TicketDto>(t));
-
-            return tickets.ToList();
-        }
-        public IEnumerable<TicketDto> GetPlayerPastTickets(int id)
-        {
-            var draw = drawRepository.Query().WhereActiveDraw().FirstOrDefault() ?? throw new NotFoundException();
-
-            var tickets = ticketRepository.Query()
-                                          .Include(x => x.Draw)
-                                          .Where(x => x.Draw!.Id != draw.Id && x.PlayerId == id)
-                                          .Select(t => mapper.Map<TicketDto>(t));
-
-            return tickets.ToList();
-        }
         public IEnumerable<TicketDto> GetRegisteredPlayersTickets()
         {
             var tickets = ticketRepository.Query()
